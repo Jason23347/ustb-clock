@@ -7,17 +7,10 @@ const char *
 calc_fee(char *str, unsigned fee) {
     sprintf(str, "%d", fee);
     /* 手动添加小数点 */
-    size_t i = strlen(str);
-    str[i] = str[i - 1];
-    i--;
-    str[i] = str[i - 1];
-    i--;
-    str[i] = str[i - 1];
-    i--;
-    str[i] = str[i - 1];
-    i--;
-    str[i] = '.';
-    str[i + 3] = '\0';
+    size_t len = strlen(str);
+    strncpy(str + len - 3, str + len - 4, 2);
+    str[len - 4] = '.';
+    str[len - 1] = '\0';
 
     return str;
 }
