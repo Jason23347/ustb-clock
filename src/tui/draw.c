@@ -13,34 +13,35 @@ draw_line(struct offset offset, const char *prompt, const char *value,
 }
 
 #ifdef CLOCK_DOT_WIDTH
-#if     (CLOCK_DOT_WIDTH == 1)
-#define EMP         " "
-#elif   (CLOCK_DOT_WIDTH == 2)
-#define EMP         "  "
-#elif   (CLOCK_DOT_WIDTH == 3)
-#define EMP         "   "
-#elif   (CLOCK_DOT_WIDTH == 4)
-#define EMP         "    "
-#elif   (CLOCK_DOT_WIDTH == 5)
-#define EMP         "     "
-#elif   (CLOCK_DOT_WIDTH == 6)
-#define EMP         "      "
+#if (CLOCK_DOT_WIDTH == 1)
+#define EMP " "
+#elif (CLOCK_DOT_WIDTH == 2)
+#define EMP "  "
+#elif (CLOCK_DOT_WIDTH == 3)
+#define EMP "   "
+#elif (CLOCK_DOT_WIDTH == 4)
+#define EMP "    "
+#elif (CLOCK_DOT_WIDTH == 5)
+#define EMP "     "
+#elif (CLOCK_DOT_WIDTH == 6)
+#define EMP "      "
 #endif
 #define DOT CLOCK_COLOR EMP "\033[0m"
 #endif /* CLOCK_DOT_WIDTH */
 
 #if (CLOCK_CONDENSE == 0)
-#define POINT (map[i][j]) ? (DOT " ") : (EMP " ")
+#define POINT (digit & 0x4000) ? (DOT " ") : (EMP " ")
 #else
-#define POINT (map[i][j]) ? DOT : EMP
+#define POINT (digit & 0x4000) ? DOT : EMP
 #endif
 
 void
-__draw_digit(struct offset offset, int map[5][3]) {
+__draw_digit(struct offset offset, int digit) {
     for (int i = 0; i < 5; i++) {
         gotopos(offset);
         for (int j = 0; j < 3; j++) {
             printf(POINT);
+            digit <<= 1;
         }
 #if (CLOCK_CONDENSE == 0)
         transpos(offset, 0, 2);
@@ -52,105 +53,23 @@ __draw_digit(struct offset offset, int map[5][3]) {
 
 void
 draw_digit(struct offset offset, int digit) {
-    /* 枚举大法就是好 */
-    if (digit == 0) {
-        int map[5][3] = {
-            {1, 1, 1},
-            {1, 0, 1},
-            {1, 0, 1},
-            {1, 0, 1},
-            {1, 1, 1},
-        };
-        __draw_digit(offset, map);
-    } else if (digit == 1) {
-        int map[5][3] = {
-            {0, 1, 0},
-            {0, 1, 0},
-            {0, 1, 0},
-            {0, 1, 0},
-            {0, 1, 0},
-        };
-        __draw_digit(offset, map);
-    } else if (digit == 2) {
-        int map[5][3] = {
-            {1, 1, 1},
-            {0, 0, 1},
-            {1, 1, 1},
-            {1, 0, 0},
-            {1, 1, 1},
-        };
-        __draw_digit(offset, map);
-    } else if (digit == 3) {
-        int map[5][3] = {
-            {1, 1, 1},
-            {0, 0, 1},
-            {1, 1, 1},
-            {0, 0, 1},
-            {1, 1, 1},
-        };
-        __draw_digit(offset, map);
-    } else if (digit == 4) {
-        int map[5][3] = {
-            {1, 0, 1},
-            {1, 0, 1},
-            {1, 1, 1},
-            {0, 0, 1},
-            {0, 0, 1},
-        };
-        __draw_digit(offset, map);
-    } else if (digit == 5) {
-        int map[5][3] = {
-            {1, 1, 1},
-            {1, 0, 0},
-            {1, 1, 1},
-            {0, 0, 1},
-            {1, 1, 1},
-        };
-        __draw_digit(offset, map);
-    } else if (digit == 6) {
-        int map[5][3] = {
-            {1, 1, 1},
-            {1, 0, 0},
-            {1, 1, 1},
-            {1, 0, 1},
-            {1, 1, 1},
-        };
-        __draw_digit(offset, map);
-    } else if (digit == 7) {
-        int map[5][3] = {
-            {1, 1, 1},
-            {0, 0, 1},
-            {0, 0, 1},
-            {0, 0, 1},
-            {0, 0, 1},
-        };
-        __draw_digit(offset, map);
-    } else if (digit == 8) {
-        int map[5][3] = {
-            {1, 1, 1},
-            {1, 0, 1},
-            {1, 1, 1},
-            {1, 0, 1},
-            {1, 1, 1},
-        };
-        __draw_digit(offset, map);
-    } else if (digit == 9) {
-        int map[5][3] = {
-            {1, 1, 1},
-            {1, 0, 1},
-            {1, 1, 1},
-            {0, 0, 1},
-            {0, 0, 1},
-        };
-        __draw_digit(offset, map);
+    int map[11] = {
+        0x7B6F, // 0
+        0x2492, // 1
+        0x73E7, // 2
+        0x73CF, // 3
+        0x5BC9, // 4
+        0x79CF, // 5
+        0x79EF, // 6
+        0x7249, // 7
+        0x7BEF, // 8
+        0x7BC9, // 9
+        0x0410, // :
+    };
+
+    if (digit < 10 && digit >= 0) {
+        __draw_digit(offset, map[digit]);
     } else { // 冒号
-        int map[5][3] = {
-            {0, 0, 0},
-            {0, 1, 0},
-            {0, 0, 0},
-            {0, 1, 0},
-            {0, 0, 0},
-        };
-        __draw_digit(offset, map);
+        __draw_digit(offset, map[10]);
     }
 }
