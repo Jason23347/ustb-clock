@@ -2,11 +2,8 @@
 #define CLOCK_H
 
 #include "offset.h"
-
 typedef struct {
-    const char *color;
-    unsigned digit_width;
-    unsigned space_width;
+    // 没想好时间怎么定义
 } clock_t;
 
 int clock_init(clock_t *clock);

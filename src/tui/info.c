@@ -1,6 +1,7 @@
 #include "info.h"
 
 #include "conf.h"
+#include "draw.h"
 #include "http.h"
 #include <string.h>
 #include <time.h>
@@ -79,4 +80,16 @@ free:
 
 void
 info_redraw(info_t *info, struct offset offset) {
+    /* Download speed */
+    draw_line(offset, "Download:", "704 KB/s", CLOCK_INFO_WIDTH);
+    next_line(offset);
+    /* IPV6 */
+    draw_line(offset, "IPV6 Mode:", "ON", CLOCK_INFO_WIDTH);
+    next_line(offset);
+    /* IPV4 Flow */
+    draw_line(offset, "IPV4 Flow:", "56.23 GB", CLOCK_INFO_WIDTH);
+    next_line(offset);
+    /* Fee Left */
+    draw_line(offset, "Fee Left:", "10.00", CLOCK_INFO_WIDTH);
+    next_line(offset);
 }
