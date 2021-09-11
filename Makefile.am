@@ -3,7 +3,6 @@ AUTOMAKE_OPTIONS=foreign
 bin_PROGRAMS=ustb-clock
 
 ustb_clock_SOURCES = \
-    src/buff.c \
     src/calc.c \
     src/net/http.c \
     src/net/tcp.c \

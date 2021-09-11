@@ -7,8 +7,6 @@
 #include <string.h>
 #include <time.h>
 
-#define MAX_BUFF_SIZE 2048
-
 void
 current_date(char *str) {
     time_t time;
@@ -32,7 +30,7 @@ pattern_match(char *str, const char *pattern, size_t size) {
 #define strscan(str, pattern, fmt, prop)                                       \
     str = strpos(p, pattern);                                                  \
     if (!str) {                                                                \
-        goto free;                                                             \
+        return -1;                                                             \
     }                                                                          \
     sscanf(str + sizeof(pattern) - 1, fmt, &prop);
 
@@ -42,20 +40,15 @@ get_info(info_t *info) {
         .ip = LOGIN_HOST,
         .port = PORT,
     };
-    buff_t buffs[1], *buff = &buffs[0];
 
-    if (buff_init(buff, MAX_BUFF_SIZE) == -1) {
+    if (http_get(&http) == -1) {
         return -1;
     }
 
-    if (http_get(&http, buff) == -1) {
-        goto free;
-    }
-
-    char *str, *p = strpos(buff->str, "<script");
+    char *str, *p = strpos(http.buff, "<script");
     if (p == 0) {
-        debug("failed to get variables: %s\n", buff->str);
-        goto free;
+        debug("failed to get variables: %s\n", http.buff);
+        return -1;
     }
 
     /* flow */
@@ -72,11 +65,7 @@ get_info(info_t *info) {
     /* fee */
     strscan(str, "fee='", "%u", info->fee);
 
-    buff_free(buff);
     return 0;
-free:
-    buff_free(buff);
-    return -1;
 }
 
 void

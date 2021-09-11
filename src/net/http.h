@@ -1,17 +1,18 @@
 #ifndef HTTP_H
 #define HTTP_H
 
-#include "buff.h"
 #include "tcp.h"
 #include "socket.h"
+
+#define MAX_BUFF_SIZE 2048
 
 typedef struct {
     const char ip[16];
     int port;
     tcp_t conn;
-    buff_t buff;
+    char buff[MAX_BUFF_SIZE];
 } http_t;
 
-int http_get(http_t *http, buff_t *buff);
+int http_get(http_t *http);
 
 #endif /* HTTP_H */
