@@ -10,5 +10,5 @@ bash版看这里：https://github.com/Jason23347/ustb-cli
 - [x] 显示星期
 - [x] 显示流量信息
 - [x] 颜色
-- [ ] 时间刷新
+- [x] 时间刷新
 - [ ] 流量信息刷新

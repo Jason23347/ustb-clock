@@ -24,7 +24,7 @@
 
 #include "offset.h"
 
-#include <time.h>
+#include <sys/time.h>
 
 #if (CLOCK_CONDENSE == 0)
 #define CLOCK_DIGIT_WIDTH (3 * CLOCK_DOT_WIDTH + 2) // 三个点之间的俩空格
@@ -34,12 +34,13 @@
 
 typedef struct {
     time_t current;
-    struct tm *tm;
+    struct timeval *tval;
+    struct timeval tval_arr[1];
 } digits_t;
 
 int clock_init(digits_t *clock);
-void clock_update(digits_t *clock,  struct tm *new_time, struct offset offset);
-void clock_redraw(digits_t *clock, struct tm *new_time, struct offset offset);
+void clock_update(digits_t *clock,  struct timeval *new_time, struct offset offset);
+void clock_redraw(digits_t *clock, struct timeval *new_time, struct offset offset);
 void clock_draw_digit(int digit);
 
 const char *current_date(char *str);

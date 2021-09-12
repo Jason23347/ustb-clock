@@ -4,10 +4,14 @@
 #include "stdio.h"
 #include "string.h"
 #include "tui.h"
+#include <pthread.h>
 #include <unistd.h>
 
 int
 tui_init(tui_t *tui) {
+    pthread_t clock_th;
+    // pthread_mutex_t mut;
+
     tui->info.curr_flow = 0;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->winsize);
 
@@ -20,8 +24,12 @@ tui_init(tui_t *tui) {
 
     tui_redraw(tui);
 
-    showcursor();
+    pthread_create(&clock_th, 0, &clock_schedule, tui);
 
+    /* 等了个寂寞 */
+    pthread_join(clock_th, 0);
+
+    showcursor();
     return 0;
 }
 
@@ -39,7 +47,10 @@ tui_redraw(tui_t *tui) {
     time_t timer;
     time(&timer);
 
-    clock_redraw(&tui->clock, localtime(&timer), offset);
+    struct timeval tval;
+    gettimeofday(&tval, 0);
+
+    clock_redraw(&tui->clock, &tval, offset);
 
     /* draw date */
     char date_str[CLOCK_DATE_LEN];
@@ -54,4 +65,31 @@ tui_redraw(tui_t *tui) {
     info_redraw(&tui->info, offset);
 
     gotoxy(0, 0);
+}
+
+void *
+clock_schedule(void *arg) {
+    tui_t *tui = arg;
+    struct timeval tval;
+
+    struct offset offset = {
+        .left = (tui->winsize.ws_col - CLOCK_MIN_WIDTH) / 2,
+        .top = (tui->winsize.ws_row - CLOCK_MIN_HEIGHT) / 2,
+    };
+
+
+    for (;;) {
+        gettimeofday(&tval, 0);
+        clock_update(&tui->clock, &tval, offset);
+        fflush(stdout);
+        /* 对齐下一秒 */
+        usleep(1000000 - tval.tv_usec);
+    }
+
+    return ((void *)0);
+}
+
+void *
+info_schedule(void *arg) {
+    return ((void *)0);
 }
