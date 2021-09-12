@@ -1,8 +1,8 @@
 #include "tcp.h"
-#include "fiber/libfiber.h"
 #include "socket.h"
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #define tcp_error(str) fprintf(stderr, "%s: " str, __FUNCTION__)
 
@@ -26,18 +26,18 @@ tcp_connect(tcp_t *tcp, const char *ip, int port) {
 
 size_t
 tcp_read(tcp_t *tcp, void *buffer, size_t size) {
-    return acl_fiber_read(tcp->fd, buffer, size);
+    return read(tcp->fd, buffer, size);
 }
 
 size_t
 tcp_write(tcp_t *tcp, const void *buffer, size_t size) {
-    return acl_fiber_write(tcp->fd, buffer, size);
+    return write(tcp->fd, buffer, size);
 }
 
 void
 tcp_close(tcp_t *tcp) {
     if (tcp->fd > 0) {
-        acl_fiber_close(tcp->fd);
+        close(tcp->fd);
     }
 
     /* Compat windows */

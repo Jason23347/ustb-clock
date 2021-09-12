@@ -13,7 +13,6 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #endif /* defined(_WIN32) || defined(_WIN64) */
-#include "fiber/libfiber.h"
 #include "socket.h"
 
 #define socket_error(...) fprintf(stderr, "socket: " __VA_ARGS__)
@@ -44,7 +43,7 @@ socket_end(void) {
 
 void
 socket_close(SOCKET fd) {
-    acl_fiber_close(fd);
+    close(fd);
 }
 
 SOCKET
@@ -58,7 +57,7 @@ socket_listen(const char *ip, int port) {
     sa.sin_port = htons(port);
     sa.sin_addr.s_addr = inet_addr(ip);
 
-    fd = acl_fiber_socket(AF_INET, SOCK_STREAM, 0);
+    fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd == INVALID_SOCKET) {
         socket_error("create socket error, %s\r\n", strerror(errno));
         getchar();
@@ -81,7 +80,7 @@ socket_listen(const char *ip, int port) {
         exit(1);
     }
 
-    if (acl_fiber_listen(fd, 128) < 0) {
+    if (listen(fd, 128) < 0) {
         socket_error("listen error %s\r\n", strerror(errno));
         getchar();
         exit(1);
@@ -96,13 +95,13 @@ socket_accept(SOCKET fd) {
     struct sockaddr_in sa;
     int len = sizeof(sa);
 
-    cfd = acl_fiber_accept(fd, (struct sockaddr *)&sa, (socklen_t *)&len);
+    cfd = accept(fd, (struct sockaddr *)&sa, (socklen_t *)&len);
     return cfd;
 }
 
 SOCKET
 socket_connect(const char *ip, int port) {
-    SOCKET fd = acl_fiber_socket(AF_INET, SOCK_STREAM, 0);
+    SOCKET fd = socket(AF_INET, SOCK_STREAM, 0);
     struct sockaddr_in sa;
     socklen_t len = (socklen_t)sizeof(sa);
 
@@ -116,8 +115,8 @@ socket_connect(const char *ip, int port) {
     sa.sin_port = htons(port);
     sa.sin_addr.s_addr = inet_addr(ip);
 
-    if (acl_fiber_connect(fd, (const struct sockaddr *)&sa, len) < 0) {
-        acl_fiber_close(fd);
+    if (connect(fd, (const struct sockaddr *)&sa, len) < 0) {
+        close(fd);
         socket_error("%s: connect %s:%d erorr %s\r\n", __FUNCTION__, ip, port,
                      strerror(errno));
         return INVALID_SOCKET;

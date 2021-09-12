@@ -4,11 +4,11 @@
 #include "config.h"
 
 #include <stddef.h>
-#include "fiber/libfiber.h"
+#include "socket.h"
 
 typedef struct
 {
-    socket_t fd;
+    SOCKET fd;
 } tcp_t;
 
 int tcp_connect(tcp_t *tcp, const char *ip, int port);

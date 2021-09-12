@@ -15,6 +15,4 @@ ustb_clock_SOURCES = \
 
 AM_CFLAGS = $(PTHREAD_CFLAGS) \
 	-Wall \
-    -Isrc \
-    -Iinclude \
-    -Llib
+    -Isrc
