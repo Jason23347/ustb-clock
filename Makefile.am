@@ -7,7 +7,7 @@ ustb_clock_SOURCES = \
     src/net/tcp.c \
     src/net/socket.c \
     src/tui/calc.c \
-    src/tui/clock.c \
+    src/tui/digits.c \
     src/tui/draw.c \
     src/tui/info.c \
     src/tui/tui.c \

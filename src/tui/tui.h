@@ -3,12 +3,12 @@
 
 #include <stdio.h>
 
-#include "clock.h"
+#include "digits.h"
 #include "info.h"
 #include "sys/ioctl.h"
 
 typedef struct {
-    clock_t clock;
+    digits_t clock;
     info_t info;
     struct winsize winsize;
 } tui_t;

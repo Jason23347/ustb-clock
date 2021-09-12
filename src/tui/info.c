@@ -6,13 +6,6 @@
 #include "draw.h"
 #include "net/http.h"
 #include <string.h>
-#include <time.h>
-
-void
-current_date(char *str) {
-    time_t time;
-    strftime(str, CLOCK_DATE_LEN, CLOCK_DATE_FORMAT, localtime(&time));
-}
 
 char *
 pattern_match(char *str, const char *pattern, size_t size) {

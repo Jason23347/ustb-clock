@@ -6,7 +6,8 @@
 #include <string.h>
 
 void
-draw_line(struct offset offset, const char *prompt, const calc_t *value, int length) {
+draw_line(struct offset offset, const char *prompt, const calc_t *value,
+          int length) {
     gotopos(offset);
     printf("%s", prompt);
     goright(length - strlen(prompt) - strlen(value->str));
@@ -74,4 +75,10 @@ draw_digit(struct offset offset, int digit) {
     } else { // 冒号
         __draw_digit(offset, map[10]);
     }
+}
+
+void
+date_redraw(struct offset offset, const char *date_str) {
+    gotopos(offset);
+    printf("%s", date_str);
 }

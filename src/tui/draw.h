@@ -14,11 +14,8 @@
 #define goleft(x)                   printf("\033[%dD", (int)(x))
 #define clear()                     printf("\033[2J");
 
-#define gotopos(offset)             gotoxy(offset.left + 1, offset.top + 1)
-#define transpos(offset, x, y)      { offset.left += x; offset.top += y; }
-#define next_line(offset)           transpos(offset, 0, 1)
-
 void draw_line(struct offset offset, const char *prompt, const calc_t *value, int length);
 void draw_digit(struct offset offset, int digit);
+void date_redraw(struct offset offset, const char *date_str);
 
 #endif /* DRAW_H */
