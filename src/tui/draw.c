@@ -54,26 +54,62 @@ __draw_digit(struct offset offset, int digit) {
     }
 }
 
+/**
+ * 绘制一个 5x3 的数字
+ *
+ * 下面以DIGIT7 举例说明 magic number.
+ * DIGIT7 = 0x7249，展开为2进制：
+ *     0111 0010 0100 1001
+ * 整理一下：
+ *     0 111 001 001 001 001
+ * 忽略最高位，继续展开为一个5x3的二维数组：
+ * {
+ *  {1, 1, 1},
+ *  {0, 0, 1},
+ *  {0, 0, 1},
+ *  {0, 0, 1},
+ *  {0, 0, 1},
+ * }
+ * 其中 1 代表实心点，0 代表空心，所有的 "1" 组成了数字 7 的形状。
+*/
 void
 draw_digit(struct offset offset, int digit) {
-    int map[11] = {
-        0x7B6F, // 0
-        0x2492, // 1
-        0x73E7, // 2
-        0x73CF, // 3
-        0x5BC9, // 4
-        0x79CF, // 5
-        0x79EF, // 6
-        0x7249, // 7
-        0x7BEF, // 8
-        0x7BC9, // 9
-        0x0410, // :
-    };
+#define DIGIT0          0x7B6F // 0
+#define DIGIT1          0x2492 // 1
+#define DIGIT2          0x73E7 // 2
+#define DIGIT3          0x73CF // 3
+#define DIGIT4          0x5BC9 // 4
+#define DIGIT5          0x79CF // 5
+#define DIGIT6          0x79EF // 6
+#define DIGIT7          0x7249 // 7
+#define DIGIT8          0x7BEF // 8
+#define DIGIT9          0x7BC9 // 9
+#define DIGIT_SEP       0x0410 // :
+#define digit(num)      DIGIT##num
 
-    if (digit < 10 && digit >= 0) {
-        __draw_digit(offset, map[digit]);
+    /* 枚举大法好 */
+    if (digit == 0) {
+        __draw_digit(offset, digit(0));
+    } else if (digit == 1) {
+        __draw_digit(offset, digit(1));
+    } else if (digit == 2) {
+        __draw_digit(offset, digit(2));
+    } else if (digit == 3) {
+        __draw_digit(offset, digit(3));
+    } else if (digit == 4) {
+        __draw_digit(offset, digit(4));
+    } else if (digit == 5) {
+        __draw_digit(offset, digit(5));
+    } else if (digit == 6) {
+        __draw_digit(offset, digit(6));
+    } else if (digit == 7) {
+        __draw_digit(offset, digit(7));
+    } else if (digit == 8) {
+        __draw_digit(offset, digit(8));
+    } else if (digit == 9) {
+        __draw_digit(offset, digit(9));
     } else { // 冒号
-        __draw_digit(offset, map[10]);
+        __draw_digit(offset, DIGIT_SEP);
     }
 }
 

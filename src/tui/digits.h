@@ -24,7 +24,7 @@
 
 #include "offset.h"
 typedef struct {
-    // 没想好时间怎么定义
+    int digits[4];
 } digits_t;
 
 int clock_init(digits_t *clock);
