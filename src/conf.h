@@ -3,12 +3,15 @@
 
 #include "config.h"
 #include "stdio.h"
+
+#include "tui/color.h"
+
 #define debug(...) fprintf(stderr, __VA_ARGS__)
 
 #define LOGIN_HOST "202.204.48.82"
 #define PORT 80
 
-#define CLOCK_COLOR "\033[46m"
+#define CLOCK_COLOR BG_DARKGREEN
 /* Should between 1 - 6 */
 #define CLOCK_DOT_WIDTH 2
 #define CLOCK_SPACE_WIDTH 3

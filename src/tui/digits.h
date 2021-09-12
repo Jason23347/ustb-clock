@@ -23,12 +23,23 @@
 #endif /* CLOCK_CONDENSE */
 
 #include "offset.h"
+
+#include <time.h>
+
+#if (CLOCK_CONDENSE == 0)
+#define CLOCK_DIGIT_WIDTH (3 * CLOCK_DOT_WIDTH + 2) // 三个点之间的俩空格
+#else
+#define CLOCK_DIGIT_WIDTH (3 * CLOCK_DOT_WIDTH)
+#endif
+
 typedef struct {
-    int digits[4];
+    time_t current;
+    struct tm *tm;
 } digits_t;
 
 int clock_init(digits_t *clock);
-void clock_redraw(digits_t *clock, struct offset offset);
+void clock_update(digits_t *clock,  struct tm *new_time, struct offset offset);
+void clock_redraw(digits_t *clock, struct tm *new_time, struct offset offset);
 void clock_draw_digit(int digit);
 
 const char *current_date(char *str);

@@ -20,16 +20,10 @@ draw_line(struct offset offset, const char *prompt, const calc_t *value,
 #define EMP " "
 #elif (CLOCK_DOT_WIDTH == 2)
 #define EMP "  "
-#elif (CLOCK_DOT_WIDTH == 3)
+#else
 #define EMP "   "
-#elif (CLOCK_DOT_WIDTH == 4)
-#define EMP "    "
-#elif (CLOCK_DOT_WIDTH == 5)
-#define EMP "     "
-#elif (CLOCK_DOT_WIDTH == 6)
-#define EMP "      "
 #endif
-#define DOT CLOCK_COLOR EMP "\033[0m"
+#define DOT color(CLOCK_COLOR) EMP "\033[0m"
 #endif /* CLOCK_DOT_WIDTH */
 
 #if (CLOCK_CONDENSE == 0)
@@ -57,7 +51,7 @@ __draw_digit(struct offset offset, int digit) {
 /**
  * 绘制一个 5x3 的数字
  *
- * 下面以DIGIT7 举例说明 magic number.
+ * 下面以 DIGIT7 举例说明 magic number.
  * DIGIT7 = 0x7249，展开为2进制：
  *     0111 0010 0100 1001
  * 整理一下：
