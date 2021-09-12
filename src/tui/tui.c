@@ -7,10 +7,11 @@
 #include <pthread.h>
 #include <unistd.h>
 
+pthread_mutex_t mux_printf;
+
 int
 tui_init(tui_t *tui) {
-    pthread_t clock_th;
-    // pthread_mutex_t mut;
+    pthread_t clock_th, info_th;
 
     tui->info.curr_flow = 0;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->winsize);
@@ -24,7 +25,9 @@ tui_init(tui_t *tui) {
 
     tui_redraw(tui);
 
+    pthread_mutex_init(&mux_printf, 0);
     pthread_create(&clock_th, 0, &clock_schedule, tui);
+    pthread_create(&info_th, 0, &info_schedule, tui);
 
     /* 等了个寂寞 */
     pthread_join(clock_th, 0);
@@ -78,11 +81,18 @@ clock_schedule(void *arg) {
     };
 
     for (;;) {
+        pthread_mutex_lock(&mux_printf);
+
         gettimeofday(&tval, 0);
         clock_update(&tui->clock, &tval, offset);
         fflush(stdout);
-        /* 对齐下一秒 */
-        usleep(1000000 - tval.tv_usec);
+
+        pthread_mutex_unlock(&mux_printf);
+
+        /* 对齐这一分钟的最后一秒 */
+        gettimeofday(&tval, 0);
+        struct tm *tmp = localtime(&tval.tv_sec);
+        usleep((60 - tmp->tm_sec) * 1000000 - tval.tv_usec);
     }
 
     return ((void *)0);
@@ -90,5 +100,28 @@ clock_schedule(void *arg) {
 
 void *
 info_schedule(void *arg) {
+    tui_t *tui = arg;
+    struct timeval tval;
+
+    struct offset offset = {
+        .left = (tui->winsize.ws_col - CLOCK_INFO_WIDTH) / 2,
+        .top = (tui->winsize.ws_row - CLOCK_MIN_HEIGHT) / 2 +
+               CLOCK_DIGIT_HEIGHT + 2,
+    };
+
+    for (;;) {
+        pthread_mutex_lock(&mux_printf);
+
+        get_info(&tui->info);
+        info_redraw(&tui->info, offset);
+        fflush(stdout);
+
+        pthread_mutex_unlock(&mux_printf);
+
+        /* update every second */
+        gettimeofday(&tval, 0);
+        usleep(1000000 - tval.tv_usec);
+    }
+
     return ((void *)0);
 }

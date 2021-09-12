@@ -5,12 +5,19 @@
 #include "draw.h"
 #include <string.h>
 
+inline void
+draw_space(int length) {
+    for (int i = 0; i < length; i++) {
+        printf(" ");
+    }
+}
+
 void
 draw_line(struct offset offset, const char *prompt, const calc_t *value,
           int length) {
     gotopos(offset);
     printf("%s", prompt);
-    goright(length - strlen(prompt) - strlen(value->str));
+    draw_space(length - strlen(prompt) - strlen(value->str));
     printf("\033[%dm%s", value->color, value->str);
     reset_color();
 }
