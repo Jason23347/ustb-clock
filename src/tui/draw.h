@@ -2,6 +2,10 @@
 #define DRAW_H
 
 #include "offset.h"
+#include "calc.h"
+
+#define hidecursor()                printf("\33[?25l")
+#define showcursor()                printf("\33[?25h")
 
 #define gotoxy(x, y)                printf("\033[%d;%dH", (int)(y), (int)(x))
 #define goup(y)                     printf("\033[%dA", (int)(y))
@@ -14,7 +18,7 @@
 #define transpos(offset, x, y)      { offset.left += x; offset.top += y; }
 #define next_line(offset)           transpos(offset, 0, 1)
 
-void draw_line(struct offset offset, const char *prompt, const char *value, int length);
+void draw_line(struct offset offset, const char *prompt, const calc_t *value, int length);
 void draw_digit(struct offset offset, int digit);
 
 #endif /* DRAW_H */

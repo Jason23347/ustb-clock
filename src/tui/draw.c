@@ -1,15 +1,17 @@
 #include "conf.h"
 
+#include "calc.h"
+#include "color.h"
 #include "draw.h"
 #include <string.h>
 
 void
-draw_line(struct offset offset, const char *prompt, const char *value,
-          int length) {
+draw_line(struct offset offset, const char *prompt, const calc_t *value, int length) {
     gotopos(offset);
     printf("%s", prompt);
-    goright(length - strlen(prompt) - strlen(value));
-    printf("%s", value);
+    goright(length - strlen(prompt) - strlen(value->str));
+    printf("\033[%dm%s", value->color, value->str);
+    reset_color();
 }
 
 #ifdef CLOCK_DOT_WIDTH

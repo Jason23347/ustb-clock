@@ -3,7 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-#include "tui.h"
+#include "tui/tui.h"
 
 void
 print_help() {
@@ -20,7 +20,7 @@ main(int argc, const char *argv[]) {
         return 0;
     }
 
-    tui_t tuis[1], *tui = &tuis[0];
+    tui_t arr[1], *tui = &arr[0];
 
     tui_init(tui);
 
