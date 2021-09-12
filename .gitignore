@@ -18,3 +18,7 @@ src/*.o
 src/*.o
 src/*/*.o
 ustb-clock
+compile
+depcomp
+install-sh
+missing
