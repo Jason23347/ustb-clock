@@ -1,9 +1,8 @@
 #include "tcp.h"
-#include <stdio.h>
+#include "fiber/libfiber.h"
+#include "socket.h"
 #include <stdio.h>
 #include <string.h>
-#include "socket.h"
-#include "fiber/libfiber.h"
 
 #define tcp_error(str) fprintf(stderr, "%s: " str, __FUNCTION__)
 

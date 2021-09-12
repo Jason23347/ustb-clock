@@ -65,21 +65,21 @@ __draw_digit(struct offset offset, int digit) {
  *  {0, 0, 1},
  * }
  * 其中 1 代表实心点，0 代表空心，所有的 "1" 组成了数字 7 的形状。
-*/
+ */
 void
 draw_digit(struct offset offset, int digit) {
-#define DIGIT0          0x7B6F // 0
-#define DIGIT1          0x2492 // 1
-#define DIGIT2          0x73E7 // 2
-#define DIGIT3          0x73CF // 3
-#define DIGIT4          0x5BC9 // 4
-#define DIGIT5          0x79CF // 5
-#define DIGIT6          0x79EF // 6
-#define DIGIT7          0x7249 // 7
-#define DIGIT8          0x7BEF // 8
-#define DIGIT9          0x7BC9 // 9
-#define DIGIT_SEP       0x0410 // :
-#define digit(num)      DIGIT##num
+#define DIGIT0     0x7B6F // 0
+#define DIGIT1     0x2492 // 1
+#define DIGIT2     0x73E7 // 2
+#define DIGIT3     0x73CF // 3
+#define DIGIT4     0x5BC9 // 4
+#define DIGIT5     0x79CF // 5
+#define DIGIT6     0x79EF // 6
+#define DIGIT7     0x7249 // 7
+#define DIGIT8     0x7BEF // 8
+#define DIGIT9     0x7BC9 // 9
+#define DIGIT_SEP  0x0410 // :
+#define digit(num) DIGIT##num
 
     /* 枚举大法好 */
     if (digit == 0) {

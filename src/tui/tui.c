@@ -77,7 +77,6 @@ clock_schedule(void *arg) {
         .top = (tui->winsize.ws_row - CLOCK_MIN_HEIGHT) / 2,
     };
 
-
     for (;;) {
         gettimeofday(&tval, 0);
         clock_update(&tui->clock, &tval, offset);
