@@ -4,8 +4,6 @@
 #include <string.h>
 #include <unistd.h>
 
-#define tcp_error(str) fprintf(stderr, "%s: " str, __FUNCTION__)
-
 /* Get a TCP connection */
 int
 tcp_connect(tcp_t *tcp, const char *ip, int port) {
@@ -16,7 +14,6 @@ tcp_connect(tcp_t *tcp, const char *ip, int port) {
     sock_fd = socket_connect(ip, port);
 
     if (sock_fd == INVALID_SOCKET) {
-        tcp_error("socket connection failed.\n");
         return -1;
     }
     tcp->fd = sock_fd;

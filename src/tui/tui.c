@@ -7,7 +7,7 @@
 #include <pthread.h>
 #include <unistd.h>
 
-pthread_mutex_t mux_printf;
+pthread_mutex_t mux_draw;
 
 int
 tui_init(tui_t *tui) {
@@ -25,7 +25,7 @@ tui_init(tui_t *tui) {
 
     tui_redraw(tui);
 
-    pthread_mutex_init(&mux_printf, 0);
+    pthread_mutex_init(&mux_draw, 0);
     pthread_create(&clock_th, 0, &clock_schedule, tui);
     pthread_create(&info_th, 0, &info_schedule, tui);
 
@@ -80,14 +80,17 @@ clock_schedule(void *arg) {
         .top = (tui->winsize.ws_row - CLOCK_MIN_HEIGHT) / 2,
     };
 
-    for (;;) {
-        pthread_mutex_lock(&mux_printf);
+    for (struct timespec tspec;;) {
+        clock_gettime(CLOCK_REALTIME, &tspec);
+        /* Wait for 0.5s */
+        tspec.tv_nsec += 500000000;
+        pthread_mutex_timedlock(&mux_draw, &tspec);
 
         gettimeofday(&tval, 0);
         clock_update(&tui->clock, &tval, offset);
         fflush(stdout);
 
-        pthread_mutex_unlock(&mux_printf);
+        pthread_mutex_unlock(&mux_draw);
 
         /* 对齐这一分钟的最后一秒 */
         gettimeofday(&tval, 0);
@@ -110,13 +113,13 @@ info_schedule(void *arg) {
     };
 
     for (;;) {
-        pthread_mutex_lock(&mux_printf);
+        pthread_mutex_lock(&mux_draw);
 
         get_info(&tui->info);
         info_redraw(&tui->info, offset);
         fflush(stdout);
 
-        pthread_mutex_unlock(&mux_printf);
+        pthread_mutex_unlock(&mux_draw);
 
         /* update every second */
         gettimeofday(&tval, 0);

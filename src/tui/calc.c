@@ -38,9 +38,7 @@ calc_flow(calc_t *calc, unsigned long flow) {
     } else {
         float gbflow = (float)flow / 1048576;
         /* 前 50G 免费，所以显示剩余免费额度 */
-        if (gbflow < 50) {
-            gbflow -= 50;
-        }
+        gbflow -= 50;
         snprintf(calc->str, sizeof(calc->str), "%.2f GB", gbflow);
     }
 

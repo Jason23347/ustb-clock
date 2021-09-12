@@ -4,8 +4,11 @@
 #include "calc.h"
 #include "offset.h"
 
-#define hidecursor() printf("\33[?25l")
-#define showcursor() printf("\33[?25h")
+#define hidecursor() printf("\033[?25l")
+#define showcursor() printf("\033[?25h")
+
+#define savecursor() printf("\033[s")
+#define loadcursor() printf("\033[u")
 
 #define gotoxy(x, y) printf("\033[%d;%dH", (int)(y), (int)(x))
 #define goup(y)      printf("\033[%dA", (int)(y))

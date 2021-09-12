@@ -81,4 +81,6 @@ info_redraw(info_t *info, struct offset offset) {
     /* Fee Left */
     draw_line(offset, "Fee Left:", calc_fee(calc, info->fee), CLOCK_INFO_WIDTH);
     next_line(offset);
+
+    gotoxy(0, 0);
 }

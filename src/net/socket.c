@@ -10,12 +10,28 @@
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <signal.h>
+#include <stdio.h>
 #include <sys/socket.h>
 #include <unistd.h>
 #endif /* defined(_WIN32) || defined(_WIN64) */
+#include "tui/draw.h"
 #include "socket.h"
+#include <stdarg.h>
 
-#define socket_error(...) fprintf(stderr, "socket: " __VA_ARGS__)
+void
+socket_error(const char *format, ...) {
+    va_list args;
+
+    savecursor();
+    gotoxy(0, 0);
+
+    printf("socket: ");
+    va_start(args, format);
+    vprintf(format, args);
+    va_end(args);
+
+    loadcursor();
+}
 
 void
 socket_init(void) {
@@ -60,8 +76,7 @@ socket_listen(const char *ip, int port) {
     fd = socket(AF_INET, SOCK_STREAM, 0);
     if (fd == INVALID_SOCKET) {
         socket_error("create socket error, %s\r\n", strerror(errno));
-        getchar();
-        exit(1);
+        return INVALID_SOCKET;
     }
 
 #if defined(_WIN32) || defined(_WIN64)
@@ -71,19 +86,17 @@ socket_listen(const char *ip, int port) {
     if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on))) {
 #endif
         socket_error("setsockopt error %s\r\n", strerror(errno));
-        exit(1);
+        return INVALID_SOCKET;
     }
 
     if (bind(fd, (struct sockaddr *)&sa, sizeof(struct sockaddr)) < 0) {
         socket_error("bind error %s\r\n", strerror(errno));
-        getchar();
-        exit(1);
+        return INVALID_SOCKET;
     }
 
     if (listen(fd, 128) < 0) {
         socket_error("listen error %s\r\n", strerror(errno));
-        getchar();
-        exit(1);
+        return INVALID_SOCKET;
     }
 
     return fd;
