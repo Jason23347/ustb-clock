@@ -18,6 +18,7 @@
 #include "socket.h"
 #include <stdarg.h>
 
+#ifndef NDEBUG
 void
 socket_error(const char *format, ...) {
     va_list args;
@@ -32,6 +33,9 @@ socket_error(const char *format, ...) {
 
     loadcursor();
 }
+#else
+#define socket_error(...)
+#endif
 
 void
 socket_init(void) {

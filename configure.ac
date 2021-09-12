@@ -8,6 +8,13 @@ AC_CONFIG_HEADERS([config.h])
 
 AM_INIT_AUTOMAKE([subdir-objects])
 
+# debug mode
+AC_ARG_ENABLE(debug,
+    AS_HELP_STRING([--enable-debug], [enable debugging, default: no]))
+AS_IF([! test "x$enable_debug" = xyes ], [
+    AC_DEFINE([NDEBUG], [1], [disable debugging code])
+])
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CC_C99
