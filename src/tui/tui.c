@@ -17,10 +17,15 @@ pthread_t clock_th, info_th;
 
 void
 tui_restart(int signal) {
+    struct timespec tspec;
+
     if (signal == SIGWINCH) {
         // TODO 防抖
         ioctl(STDIN_FILENO, TIOCGWINSZ, &tui_struct.win);
-        pthread_mutex_lock(&mux_draw);
+
+        clock_gettime(CLOCK_REALTIME, &tspec);
+        tspec.tv_sec++;
+        pthread_mutex_timedlock(&mux_draw, &tspec);
         clear();
         tui_redraw();
         pthread_mutex_unlock(&mux_draw);
@@ -111,9 +116,12 @@ void *
 clock_schedule(void *arg) {
     tui_t *tui = arg;
     struct timeval tval;
+    struct timespec tspec;
 
     for (;;) {
-        pthread_mutex_lock(&mux_draw);
+        clock_gettime(CLOCK_REALTIME, &tspec);
+        tspec.tv_sec++;
+        pthread_mutex_timedlock(&mux_draw, &tspec);
 
         gettimeofday(&tval, 0);
         clock_update(&tui->clock, &tval, clock_offset);
@@ -134,9 +142,12 @@ void *
 info_schedule(void *arg) {
     tui_t *tui = arg;
     struct timeval tval;
+    struct timespec tspec;
 
     for (;;) {
-        pthread_mutex_lock(&mux_draw);
+        clock_gettime(CLOCK_REALTIME, &tspec);
+        tspec.tv_sec++;
+        pthread_mutex_timedlock(&mux_draw, &tspec);
 
         get_info(&tui->info);
         info_redraw(&tui->info, info_offset);
