@@ -16,9 +16,13 @@ tui_init(tui_t *tui) {
     tui->info.curr_flow = 0;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->winsize);
 
+    clock_init(&tui->clock);
+    info_init(&tui->info);
+
     if (get_info(&tui->info) == -1) {
         return -1;
     }
+    info_init_flow(&tui->info);
 
     clear();
     hidecursor();

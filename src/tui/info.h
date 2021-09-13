@@ -1,20 +1,18 @@
 #ifndef INFO_H
 #define INFO_H
 
+#include "flow.h"
 #include "offset.h"
 
 typedef struct {
-    unsigned long last_flow;
-    unsigned long curr_flow;
+    int curr_flow;
     int ipv6_mode;
     unsigned fee;
+    flow_t flow_arr[FLOW_NUM];
 } info_t;
 
-const char *download_speed();
-const char *ipv6_mode();
-const char *ipv4_flow();
-const char *fee_left();
-
+void info_init(info_t *info);
+void info_init_flow(info_t *info);
 int get_info(info_t *info);
 void info_redraw(info_t *info, struct offset offset);
 

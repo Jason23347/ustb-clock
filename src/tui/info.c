@@ -7,6 +7,24 @@
 #include "net/http.h"
 #include <string.h>
 
+void
+info_init(info_t *info) {
+    memset(info->flow_arr, 0, sizeof(info->flow_arr));
+}
+
+void
+info_init_flow(info_t *info) {
+    flow_t *current = info->flow_arr;
+    for (flow_t *flow = current + 1; flow - current < FLOW_NUM;
+         flow++) {
+        flow->download = current->download;
+        flow->tval.tv_sec = current->tval.tv_sec;
+        flow->tval.tv_usec = current->tval.tv_usec;
+    }
+
+    return;
+}
+
 char *
 pattern_match(char *str, const char *pattern, size_t size) {
     char *p = str;
@@ -30,6 +48,7 @@ pattern_match(char *str, const char *pattern, size_t size) {
 
 int
 get_info(info_t *info) {
+    unsigned long flow;
     http_t http = {
         .ip = LOGIN_HOST,
         .port = PORT,
@@ -46,10 +65,10 @@ get_info(info_t *info) {
     }
 
     /* flow */
-    info->last_flow = info->curr_flow;
-    strscan(str, "flow='", "%lu", info->curr_flow);
-    if (info->last_flow == 0) {
-        info->last_flow = info->curr_flow;
+    strscan(str, "flow='", "%lu", flow);
+    flow_record(&info->flow_arr[info->curr_flow], flow);
+    if (++info->curr_flow == FLOW_NUM) {
+        info->curr_flow -= FLOW_NUM;
     }
 
     /* ipv6 mode */
@@ -66,8 +85,8 @@ void
 info_redraw(info_t *info, struct offset offset) {
     calc_t calc_arr[1], *calc = &calc_arr[0];
     /* Download speed */
-    draw_line(offset,
-              "Download:", calc_speed(calc, info->curr_flow - info->last_flow),
+    draw_line(offset, "Download:",
+              calc_speed(calc, flow_speed(info->flow_arr, info->curr_flow)),
               CLOCK_INFO_WIDTH);
     next_line(offset);
     /* IPV6 */
@@ -75,7 +94,8 @@ info_redraw(info_t *info, struct offset offset) {
               CLOCK_INFO_WIDTH);
     next_line(offset);
     /* IPV4 Flow */
-    draw_line(offset, "IPV4 Flow:", calc_flow(calc, info->curr_flow),
+    draw_line(offset, "IPV4 Flow:",
+              calc_flow(calc, info->flow_arr[info->curr_flow].download),
               CLOCK_INFO_WIDTH);
     next_line(offset);
     /* Fee Left */
