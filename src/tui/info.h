@@ -14,6 +14,6 @@ typedef struct {
 void info_init(info_t *info);
 void info_init_flow(info_t *info);
 int get_info(info_t *info);
-void info_redraw(info_t *info, struct offset offset);
+void info_redraw(info_t *info, offset_t offset);
 
 #endif /* INFO_H */

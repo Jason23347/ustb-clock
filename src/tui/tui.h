@@ -10,11 +10,11 @@
 typedef struct {
     digits_t clock;
     info_t info;
-    struct winsize winsize;
+    struct winsize win;
 } tui_t;
 
-int tui_init(tui_t *tui);
-void tui_redraw(tui_t *tui);
+int tui_init();
+void tui_redraw();
 
 void *clock_schedule(void *arg);
 void *info_schedule(void *arg);

@@ -82,7 +82,7 @@ get_info(info_t *info) {
 }
 
 void
-info_redraw(info_t *info, struct offset offset) {
+info_redraw(info_t *info, offset_t offset) {
     calc_t calc_arr[1], *calc = &calc_arr[0];
     /* Download speed */
     draw_line(offset, "Download:",

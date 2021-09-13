@@ -40,9 +40,9 @@ typedef struct {
 
 int clock_init(digits_t *clock);
 void clock_update(digits_t *clock, struct timeval *new_time,
-                  struct offset offset);
+                  offset_t offset);
 void clock_redraw(digits_t *clock, struct timeval *new_time,
-                  struct offset offset);
+                  offset_t offset);
 void clock_draw_digit(int digit);
 
 const char *current_date(char *str);

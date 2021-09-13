@@ -17,9 +17,9 @@
 #define goleft(x)    printf("\033[%dD", (int)(x))
 #define clear()      printf("\033[2J");
 
-void draw_line(struct offset offset, const char *prompt, const calc_t *value,
+void draw_line(offset_t offset, const char *prompt, const calc_t *value,
                int length);
-void draw_digit(struct offset offset, int digit);
-void date_redraw(struct offset offset, const char *date_str);
+void draw_digit(offset_t offset, int digit);
+void date_redraw(offset_t offset, const char *date_str);
 
 #endif /* DRAW_H */

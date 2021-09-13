@@ -13,7 +13,7 @@ draw_space(int length) {
 }
 
 void
-draw_line(struct offset offset, const char *prompt, const calc_t *value,
+draw_line(offset_t offset, const char *prompt, const calc_t *value,
           int length) {
     gotopos(offset);
     printf("%s", prompt);
@@ -40,7 +40,7 @@ draw_line(struct offset offset, const char *prompt, const calc_t *value,
 #endif
 
 void
-__draw_digit(struct offset offset, int digit) {
+__draw_digit(offset_t offset, int digit) {
     for (int i = 0; i < 5; i++) {
         gotopos(offset);
         for (int j = 0; j < 3; j++) {
@@ -74,7 +74,7 @@ __draw_digit(struct offset offset, int digit) {
  * 其中 1 代表实心点，0 代表空心，所有的 "1" 组成了数字 7 的形状。
  */
 void
-draw_digit(struct offset offset, int digit) {
+draw_digit(offset_t offset, int digit) {
 #define DIGIT0     0x7B6F // 0
 #define DIGIT1     0x2492 // 1
 #define DIGIT2     0x73E7 // 2
@@ -115,7 +115,7 @@ draw_digit(struct offset offset, int digit) {
 }
 
 void
-date_redraw(struct offset offset, const char *date_str) {
+date_redraw(offset_t offset, const char *date_str) {
     gotopos(offset);
     printf("%s", date_str);
 }

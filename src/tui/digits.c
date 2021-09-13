@@ -21,7 +21,7 @@ clock_init(digits_t *clock) {
 
 /* 从右到左绘制数字，不包括分隔符（冒号） */
 void
-clock_update(digits_t *clock, struct timeval *new_time, struct offset offset) {
+clock_update(digits_t *clock, struct timeval *new_time, offset_t offset) {
     struct tm *tmp = localtime(&new_time->tv_sec);
 
     // 从右往左
@@ -48,7 +48,7 @@ clock_update(digits_t *clock, struct timeval *new_time, struct offset offset) {
 
 /* 从右到左绘制数字和分隔符（冒号） */
 void
-clock_redraw(digits_t *clock, struct timeval *new_time, struct offset offset) {
+clock_redraw(digits_t *clock, struct timeval *new_time, offset_t offset) {
     clock_update(clock, new_time, offset);
 
     transpos(offset, 2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH) - 2, 0);
