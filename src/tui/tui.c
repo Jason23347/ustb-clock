@@ -117,6 +117,7 @@ clock_schedule(void *arg) {
     tui_t *tui = arg;
     struct timeval tval;
     struct timespec tspec;
+    char date_str[CLOCK_DATE_LEN];
 
     for (;;) {
         clock_gettime(CLOCK_REALTIME, &tspec);
@@ -124,7 +125,12 @@ clock_schedule(void *arg) {
         pthread_mutex_timedlock(&mux_draw, &tspec);
 
         gettimeofday(&tval, 0);
-        clock_update(&tui->clock, &tval, clock_offset);
+        int num = clock_update(&tui->clock, &tval, clock_offset);
+        if (num > 2) {
+            /* draw date */
+            current_date(date_str);
+            date_redraw(date_offset, date_str);
+        }
         fflush(stdout);
 
         pthread_mutex_unlock(&mux_draw);

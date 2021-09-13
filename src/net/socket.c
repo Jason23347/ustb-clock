@@ -14,8 +14,8 @@
 #include <sys/socket.h>
 #include <unistd.h>
 #endif /* defined(_WIN32) || defined(_WIN64) */
-#include "tui/draw.h"
 #include "socket.h"
+#include "tui/draw.h"
 #include <stdarg.h>
 
 #ifndef NDEBUG

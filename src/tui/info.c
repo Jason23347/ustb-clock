@@ -15,8 +15,7 @@ info_init(info_t *info) {
 void
 info_init_flow(info_t *info) {
     flow_t *current = info->flow_arr;
-    for (flow_t *flow = current + 1; flow - current < FLOW_NUM;
-         flow++) {
+    for (flow_t *flow = current + 1; flow - current < FLOW_NUM; flow++) {
         flow->download = current->download;
         flow->tval.tv_sec = current->tval.tv_sec;
         flow->tval.tv_usec = current->tval.tv_usec;
