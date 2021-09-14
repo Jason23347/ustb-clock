@@ -15,6 +15,7 @@ offset_t clock_offset, date_offset, info_offset;
 pthread_mutex_t mux_draw;
 pthread_t clock_th, info_th;
 
+#ifdef ALWAYS_DETECT_WINSIZE
 void
 tui_restart(int signal) {
     struct timespec tspec;
@@ -31,6 +32,7 @@ tui_restart(int signal) {
         pthread_mutex_unlock(&mux_draw);
     }
 }
+#endif
 
 void
 handle_abort(int signal) {
@@ -51,13 +53,16 @@ tui_init() {
     tui->info.curr_flow = 0;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->win);
 
+#ifdef ALWAYS_DETECT_WINSIZE
     signal(SIGWINCH, tui_restart);
+#endif
     signal(SIGINT, handle_abort);
 
     clock_init(&tui->clock);
     info_init(&tui->info);
 
     if (get_info(&tui->info) == -1) {
+        printf("Failed to get flow info.\n");
         return -1;
     }
     info_init_flow(&tui->info);

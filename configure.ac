@@ -15,6 +15,13 @@ AS_IF([! test "x$enable_debug" = xyes ], [
     AC_DEFINE([NDEBUG], [1], [disable debugging code])
 ])
 
+# detect window size
+AC_ARG_ENABLE(detect_winsize,
+    AS_HELP_STRING([--enable-winsize-detection], [detect winsize, default: no]))
+AS_IF([ test "x$enable_detect_winsize" = xyes ], [
+    AC_DEFINE([ALWAYS_DETECT_WINSIZE], [1], [always detect winsize and redraw])
+])
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CC_C99
