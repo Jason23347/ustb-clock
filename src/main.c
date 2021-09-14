@@ -2,27 +2,27 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <unistd.h>
 
 #include "tui/tui.h"
 
 void
-print_help() {
-    fprintf(stderr,
-            "%s\n\n"
-            "Copy 2021 Jason <jason23347@gmail.com>\n",
-            PACKAGE_STRING);
+print_info() {
+    printf("%s\n\n"
+           "Copy 2021 Jason <jason23347@gmail.com>\n",
+           PACKAGE_STRING);
 }
 
 int
 main(int argc, const char *argv[]) {
-    if (!strcmp(argv[0], "--help")) {
-        print_help();
-        return 0;
-    }
+    /* disable stderr */
+    fclose(stderr);
 
-    tui_t arr[1], *tui = &arr[0];
+    /* print copy info */
+    print_info();
+    sleep(1);
 
-    tui_init(tui);
+    tui_init();
 
     return 0;
 }
