@@ -9,8 +9,10 @@
 #ifndef NDEBUG
 #define debug(...)                                                             \
     {                                                                          \
+        savecursor();                                                          \
         gotoxy(0, 0);                                                          \
         printf(__VA_ARGS__);                                                   \
+        loadcursor();                                                          \
     }
 #else
 #define debug(...)
