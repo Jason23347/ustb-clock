@@ -6,6 +6,7 @@
 #include "tui.h"
 #include <pthread.h>
 #include <signal.h>
+#include <sys/time.h>
 #include <unistd.h>
 
 tui_t tui_struct;
@@ -16,12 +17,11 @@ pthread_mutex_t mux_draw;
 pthread_t clock_th, info_th;
 
 #ifdef ALWAYS_DETECT_WINSIZE
-void
-tui_restart(int signal) {
-    struct timespec tspec;
 
-    if (signal == SIGWINCH) {
-        // TODO 防抖
+void
+tui_restart(int sig) {
+    if (sig == SIGALRM) {
+        struct timespec tspec;
         ioctl(STDIN_FILENO, TIOCGWINSZ, &tui_struct.win);
 
         clock_gettime(CLOCK_REALTIME, &tspec);
@@ -30,9 +30,30 @@ tui_restart(int signal) {
         clear();
         tui_redraw();
         pthread_mutex_unlock(&mux_draw);
+
+        struct itimerval timer = {0};
+        setitimer(ITIMER_REAL, &timer, 0);
     }
 }
-#endif
+
+inline void
+debounce() {
+    struct itimerval timer = {
+        .it_interval = {.tv_usec = 10000}, // 10ms
+        .it_value = {.tv_usec = 10},
+    };
+
+    setitimer(ITIMER_REAL, &timer, 0);
+}
+
+void
+handle_winch(int sig) {
+    if (sig == SIGWINCH) {
+        debounce();
+    }
+}
+
+#endif /* ALWAYS_DETECT_WINSIZE */
 
 void
 handle_abort(int signal) {
@@ -50,13 +71,14 @@ int
 tui_init() {
     tui_t *tui = &tui_struct;
 
-    tui->info.curr_flow = 0;
-    ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->win);
-
 #ifdef ALWAYS_DETECT_WINSIZE
-    signal(SIGWINCH, tui_restart);
+    signal(SIGWINCH, handle_winch);
+    signal(SIGALRM, tui_restart);
 #endif
     signal(SIGINT, handle_abort);
+
+    tui->info.curr_flow = 0;
+    ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->win);
 
     clock_init(&tui->clock);
     info_init(&tui->info);
@@ -70,7 +92,7 @@ tui_init() {
     clear();
     hidecursor();
 
-    tui_redraw(tui);
+    tui_redraw();
 
     pthread_mutex_init(&mux_draw, 0);
     pthread_create(&clock_th, 0, &clock_schedule, tui);
@@ -79,7 +101,6 @@ tui_init() {
     /* 等了个寂寞 */
     pthread_join(clock_th, 0);
 
-    showcursor();
     return 0;
 }
 
