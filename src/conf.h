@@ -30,4 +30,6 @@
 #define CLOCK_DATE_LEN    28
 #define CLOCK_DATE_FORMAT "%a %b %d  %p"
 
+#define INFO_UPDATE_INTERVAL 3
+
 #endif /* CONF_H */

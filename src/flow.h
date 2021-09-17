@@ -8,7 +8,7 @@
 typedef struct {
     struct timeval tval;
     unsigned long download;
-    unsigned long speed;
+    double speed;
 } flow_t;
 
 unsigned long flow_speed(flow_t arr[FLOW_NUM], int current_flow);

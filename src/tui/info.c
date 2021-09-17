@@ -66,7 +66,7 @@ get_info(info_t *info) {
     /* flow */
     strscan(str, "flow='", "%lu", flow);
     flow_record(&info->flow_arr[info->curr_flow], flow);
-    if (++info->curr_flow == FLOW_NUM) {
+    if (++info->curr_flow >= FLOW_NUM) {
         info->curr_flow -= FLOW_NUM;
     }
 

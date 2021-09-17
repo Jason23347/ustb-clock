@@ -198,9 +198,9 @@ info_schedule(void *arg) {
         pthread_mutex_unlock(&mux_draw);
 
     next_tick:
-        /* update every second */
+        /* update every 5 seconds */
         gettimeofday(&tval, 0);
-        usleep(1000000 - tval.tv_usec);
+        usleep(1000000 * INFO_UPDATE_INTERVAL - tval.tv_usec);
     }
 
     return ((void *)0);
