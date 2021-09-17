@@ -83,12 +83,6 @@ tui_init() {
     clock_init(&tui->clock);
     info_init(&tui->info);
 
-    if (get_info(&tui->info) == -1) {
-        printf("Failed to get flow info.\n");
-        return -1;
-    }
-    info_init_flow(&tui->info);
-
     clear();
     hidecursor();
 
@@ -150,8 +144,10 @@ clock_schedule(void *arg) {
     for (;;) {
         clock_gettime(CLOCK_REALTIME, &tspec);
         tspec.tv_sec++;
-        if ((err = pthread_mutex_timedlock(&mux_draw, &tspec)) == 0) {
+        err = pthread_mutex_timedlock(&mux_draw, &tspec);
+        if (err) {
             // TODO handle error
+            debug("Lock error: %s", strerror(err));
             goto next_tick;
         }
 
@@ -187,20 +183,21 @@ info_schedule(void *arg) {
     for (;;) {
         clock_gettime(CLOCK_REALTIME, &tspec);
         tspec.tv_sec++;
-        if ((err = pthread_mutex_timedlock(&mux_draw, &tspec)) == 0) {
+        err = pthread_mutex_timedlock(&mux_draw, &tspec);
+        if (err) {
             // TODO handle error
             goto next_tick;
         }
-        get_info(&tui->info);
+        info_fetch(&tui->info);
         info_redraw(&tui->info, info_offset);
         fflush(stdout);
 
         pthread_mutex_unlock(&mux_draw);
 
     next_tick:
-        /* update every 5 seconds */
+        /* update every INFO_REFRESH_INTERVAL seconds */
         gettimeofday(&tval, 0);
-        usleep(1000000 * INFO_UPDATE_INTERVAL - tval.tv_usec);
+        usleep(1000000 * INFO_REFRESH_INTERVAL - tval.tv_usec);
     }
 
     return ((void *)0);

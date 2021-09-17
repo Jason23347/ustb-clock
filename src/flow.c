@@ -2,14 +2,14 @@
 
 #define round(n) (int)(n + 0.5)
 
-unsigned long
+unsigned
 flow_wight(unsigned long sec) {
     if (sec == 0)
         return 100;
     else if (sec < 6000000) {
         return round(2.36e-12 * sec * (sec - 12e6) + 100);
     } else {
-        return 0;
+        return 15;
     }
 }
 
@@ -41,7 +41,7 @@ flow_speed(flow_t arr[FLOW_NUM], int current_flow) {
         sec = (tv->tv_sec - flow->tval.tv_sec) * 1000000 +
               (tv->tv_usec - flow->tval.tv_usec);
 
-        int w = flow_wight(sec);
+        unsigned w = flow_wight(sec);
         weight += w;
         res += w * flow->speed;
     }

@@ -7,13 +7,16 @@
 #include "net/http.h"
 #include <string.h>
 
-void
+int
 info_init(info_t *info) {
     memset(info->flow_arr, 0, sizeof(info->flow_arr));
-}
 
-void
-info_init_flow(info_t *info) {
+    if (info_fetch(info) == -1) {
+        printf("Failed to get flow info.\n");
+        return -1;
+    }
+
+    /* 初始化 */
     flow_t *current = info->flow_arr;
     for (flow_t *flow = current + 1; flow - current < FLOW_NUM; flow++) {
         flow->download = current->download;
@@ -21,11 +24,11 @@ info_init_flow(info_t *info) {
         flow->tval.tv_usec = current->tval.tv_usec;
     }
 
-    return;
+    return 0;
 }
 
 char *
-pattern_match(char *str, const char *pattern, size_t size) {
+strmatch(char *str, const char *pattern, size_t size) {
     char *p = str;
     do {
         p = strchr(p + 1, pattern[0]);
@@ -37,16 +40,18 @@ pattern_match(char *str, const char *pattern, size_t size) {
     return p;
 }
 
-#define strpos(str, pattern) pattern_match(str, pattern, sizeof(pattern))
+#define strpos(str, pattern) strmatch(str, pattern, sizeof(pattern))
 #define strscan(str, pattern, fmt, prop)                                       \
-    str = strpos(p, pattern);                                                  \
-    if (!str) {                                                                \
-        return -1;                                                             \
-    }                                                                          \
-    sscanf(str + sizeof(pattern) - 1, fmt, &prop);
+    {                                                                          \
+        str = strpos(p, pattern);                                              \
+        if (!str) {                                                            \
+            return -1;                                                         \
+        }                                                                      \
+        sscanf(str + sizeof(pattern) - 1, fmt, &prop);                         \
+    }
 
 int
-get_info(info_t *info) {
+info_fetch(info_t *info) {
     unsigned long flow;
     http_t http = {
         .ip = LOGIN_HOST,
