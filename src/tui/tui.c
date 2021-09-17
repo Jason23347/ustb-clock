@@ -141,6 +141,8 @@ tui_redraw() {
 void *
 clock_schedule(void *arg) {
     tui_t *tui = arg;
+
+    int err;
     struct timeval tval;
     struct timespec tspec;
     char date_str[CLOCK_DATE_LEN];
@@ -148,7 +150,10 @@ clock_schedule(void *arg) {
     for (;;) {
         clock_gettime(CLOCK_REALTIME, &tspec);
         tspec.tv_sec++;
-        pthread_mutex_timedlock(&mux_draw, &tspec);
+        if ((err = pthread_mutex_timedlock(&mux_draw, &tspec)) == 0) {
+            // TODO handle error
+            goto next_tick;
+        }
 
         gettimeofday(&tval, 0);
         int num = clock_update(&tui->clock, &tval, clock_offset);
@@ -161,6 +166,7 @@ clock_schedule(void *arg) {
 
         pthread_mutex_unlock(&mux_draw);
 
+    next_tick:
         /* 对齐这一分钟的最后一秒 */
         gettimeofday(&tval, 0);
         struct tm *tmp = localtime(&tval.tv_sec);
@@ -173,20 +179,25 @@ clock_schedule(void *arg) {
 void *
 info_schedule(void *arg) {
     tui_t *tui = arg;
+
+    int err;
     struct timeval tval;
     struct timespec tspec;
 
     for (;;) {
         clock_gettime(CLOCK_REALTIME, &tspec);
         tspec.tv_sec++;
-        pthread_mutex_timedlock(&mux_draw, &tspec);
-
+        if ((err = pthread_mutex_timedlock(&mux_draw, &tspec)) == 0) {
+            // TODO handle error
+            goto next_tick;
+        }
         get_info(&tui->info);
         info_redraw(&tui->info, info_offset);
         fflush(stdout);
 
         pthread_mutex_unlock(&mux_draw);
 
+    next_tick:
         /* update every second */
         gettimeofday(&tval, 0);
         usleep(1000000 - tval.tv_usec);
