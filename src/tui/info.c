@@ -9,7 +9,7 @@
 
 int
 info_init(info_t *info) {
-    memset(info->flow_arr, 0, sizeof(info->flow_arr));
+    memset(info, 0, sizeof(info_t));
 
     if (info_fetch(info) == -1) {
         printf("Failed to get flow info.\n");

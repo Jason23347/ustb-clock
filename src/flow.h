@@ -3,7 +3,7 @@
 
 #include <sys/time.h>
 
-#define FLOW_NUM 16
+#define FLOW_NUM 8
 
 typedef struct {
     struct timeval tval;

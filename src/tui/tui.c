@@ -77,7 +77,6 @@ tui_init() {
 #endif
     signal(SIGINT, handle_abort);
 
-    tui->info.curr_flow = 0;
     ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->win);
 
     clock_init(&tui->clock);
