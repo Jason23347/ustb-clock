@@ -16,8 +16,6 @@ int getopt(int argc, char *const argv[], char *opts);
 void socket_init(void);
 void socket_end(void);
 void socket_close(SOCKET fd);
-SOCKET socket_listen(const char *ip, int port);
-SOCKET socket_accept(SOCKET fd);
 SOCKET socket_connect(const char *ip, int port);
 
 #endif /* SOCKET_H */

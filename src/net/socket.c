@@ -19,6 +19,7 @@
 #include <stdarg.h>
 
 #ifndef NDEBUG
+/** 在tty左上角输出错误信息。 */
 void
 socket_error(const char *format, ...) {
     va_list args;
@@ -64,56 +65,6 @@ socket_end(void) {
 void
 socket_close(SOCKET fd) {
     close(fd);
-}
-
-SOCKET
-socket_listen(const char *ip, int port) {
-    SOCKET fd;
-    int on;
-    struct sockaddr_in sa;
-
-    memset(&sa, 0, sizeof(sa));
-    sa.sin_family = AF_INET;
-    sa.sin_port = htons(port);
-    sa.sin_addr.s_addr = inet_addr(ip);
-
-    fd = socket(AF_INET, SOCK_STREAM, 0);
-    if (fd == INVALID_SOCKET) {
-        socket_error("create socket error, %s\r\n", strerror(errno));
-        return INVALID_SOCKET;
-    }
-
-#if defined(_WIN32) || defined(_WIN64)
-    if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (const char *)&on,
-                   sizeof(on))) {
-#else
-    if (setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, &on, sizeof(on))) {
-#endif
-        socket_error("setsockopt error %s\r\n", strerror(errno));
-        return INVALID_SOCKET;
-    }
-
-    if (bind(fd, (struct sockaddr *)&sa, sizeof(struct sockaddr)) < 0) {
-        socket_error("bind error %s\r\n", strerror(errno));
-        return INVALID_SOCKET;
-    }
-
-    if (listen(fd, 128) < 0) {
-        socket_error("listen error %s\r\n", strerror(errno));
-        return INVALID_SOCKET;
-    }
-
-    return fd;
-}
-
-SOCKET
-socket_accept(SOCKET fd) {
-    SOCKET cfd;
-    struct sockaddr_in sa;
-    int len = sizeof(sa);
-
-    cfd = accept(fd, (struct sockaddr *)&sa, (socklen_t *)&len);
-    return cfd;
 }
 
 SOCKET
