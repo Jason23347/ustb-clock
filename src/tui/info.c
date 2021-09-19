@@ -11,36 +11,40 @@ int
 info_init(info_t *info) {
     memset(info, 0, sizeof(info_t));
 
+    /* 初始化流量表之前需要获取当前流量信息 */
     if (info_fetch(info) == -1) {
+        /* 如果失败大概是必然，先连好网络再说吧 */
         printf("Failed to get flow info.\n");
         return -1;
     }
 
-    /* 初始化 */
+    /**
+     * 初始化用于下载速度计算的流量表，
+     * 简而言之就是把第一次 info_fetch得到的数据复制到每一个元素
+     */
     flow_t *current = info->flow_arr;
-    for (flow_t *flow = current + 1; flow - current < FLOW_NUM; flow++) {
-        flow->download = current->download;
-        flow->tval.tv_sec = current->tval.tv_sec;
-        flow->tval.tv_usec = current->tval.tv_usec;
-    }
+    memcpy(current + 1, current, sizeof(flow_t) * (FLOW_NUM - 1));
 
     return 0;
 }
 
+/* 字符串查找，C语言么有哇 */
 char *
 strmatch(char *str, const char *pattern, size_t size) {
     char *p = str;
     do {
         p = strchr(p + 1, pattern[0]);
         if (p == 0) {
-            return (void *)0;
+            return 0;
         }
     } while (strncmp(p, pattern, size - 1) != 0);
 
     return p;
 }
 
+/* 简约的写法，应当仅仅用于静态变量 */
 #define strpos(str, pattern) strmatch(str, pattern, sizeof(pattern))
+/* 根据fmt读取pattern首次匹配str后面的内容到prop中 */
 #define strscan(str, pattern, fmt, prop)                                       \
     {                                                                          \
         str = strpos(p, pattern);                                              \
@@ -50,6 +54,14 @@ strmatch(char *str, const char *pattern, size_t size) {
         sscanf(str + sizeof(pattern) - 1, fmt, &prop);                         \
     }
 
+/* 简单封装读取当前流量的操作，以后会弃用 */
+inline void
+flow_record(flow_t *flow, unsigned long down_flow) {
+    flow->download = down_flow;
+    gettimeofday(&flow->tval, 0);
+}
+
+/* 读书人的事怎么能说是爬虫呢 */
 int
 info_fetch(info_t *info) {
     unsigned long flow;
@@ -77,7 +89,6 @@ info_fetch(info_t *info) {
 
     /* ipv6 mode */
     strscan(str, "v46m=", "%u", info->ipv6_mode);
-    info->ipv6_mode = (info->ipv6_mode == 4 || info->ipv6_mode == 12);
 
     /* fee */
     strscan(str, "fee='", "%u", info->fee);
@@ -85,6 +96,7 @@ info_fetch(info_t *info) {
     return 0;
 }
 
+/* 重绘 info */
 void
 info_redraw(info_t *info, offset_t offset) {
     calc_t calc_arr[1], *calc = &calc_arr[0];

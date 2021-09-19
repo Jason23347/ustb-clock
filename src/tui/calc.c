@@ -4,10 +4,12 @@
 #include <stdio.h>
 #include <string.h>
 
+/* 取整 */
 #define round(n) (unsigned long)(n + 0.5)
 
+/* 根据 fee 设置颜色 */
 inline int
-color_fee(unsigned fee) {
+__color_fee(unsigned fee) {
     if (fee >= 200000) {
         return GREEN;
     } else if (fee >= 100000) {
@@ -38,14 +40,16 @@ __calc_decimal(char *str, size_t maxlen, unsigned long number, size_t n) {
     return str;
 }
 
+/* 计算余额 */
 calc_t *
 calc_fee(calc_t *calc, unsigned fee) {
     __calc_decimal(calc->str, sizeof(calc->str), fee, 4);
-    calc->color = color_fee(fee);
+    calc->color = __color_fee(fee);
 
     return calc;
 }
 
+/* 计算流量 */
 calc_t *
 calc_flow(calc_t *calc, unsigned long flow) {
     if (flow < 1000) {
@@ -72,6 +76,7 @@ calc_flow(calc_t *calc, unsigned long flow) {
     return calc;
 }
 
+/* 计算流量下载速度 */
 calc_t *
 calc_speed(calc_t *calc, unsigned long flow) {
     if (flow < 8)
@@ -82,9 +87,10 @@ calc_speed(calc_t *calc, unsigned long flow) {
     return calc;
 }
 
+/* 计算 IPV6 模式是否打开 */
 calc_t *
 calc_ipv6(calc_t *calc, int mode) {
-    if (mode) {
+    if (mode == 4 || mode == 12) {
         strncpy(calc->str, "ON", sizeof(calc->str));
         calc->color = GREEN;
     } else {
