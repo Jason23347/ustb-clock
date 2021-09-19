@@ -12,6 +12,5 @@ typedef struct {
 } flow_t;
 
 unsigned long flow_speed(flow_t arr[FLOW_NUM], int current_flow);
-void flow_record(flow_t *flow, unsigned long down_flow);
 
 #endif /* FLOW_H */
