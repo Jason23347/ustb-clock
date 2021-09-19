@@ -18,11 +18,14 @@ draw_line(offset_t offset, const char *prompt, const calc_t *value,
     gotopos(offset);
     printf("%s", prompt);
     draw_space(length - strlen(prompt) - strlen(value->str));
-    printf("\033[%dm%s", value->color, value->str);
+    set_color(value->color);
+    printf("%s", value->str);
     reset_color();
 }
 
-#ifdef CLOCK_DOT_WIDTH
+#ifndef CLOCK_DOT_WIDTH
+#define CLOCK_DOT_WIDTH 2
+#endif /* CLOCK_DOT_WIDTH */
 
 #if (CLOCK_DOT_WIDTH == 1)
 #define EMP " "
@@ -32,15 +35,13 @@ draw_line(offset_t offset, const char *prompt, const calc_t *value,
 #define EMP "   "
 #endif
 
-#define DOT color(CLOCK_COLOR) EMP "\033[0m"
+#define DOT color(CLOCK_COLOR) EMP color(BG_NORMAL)
 
 #if (CLOCK_CONDENSE == 0)
 #define POINT (digit & 0x4000) ? (DOT " ") : (EMP " ")
 #else
 #define POINT (digit & 0x4000) ? DOT : EMP
 #endif
-
-#endif /* CLOCK_DOT_WIDTH */
 
 inline void
 __draw_digit(offset_t offset, int digit) {
