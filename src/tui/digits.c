@@ -22,12 +22,16 @@ clock_init(digits_t *clock) {
     return 0;
 }
 
-#define draw_digit_update(pos, num)                                            \
-    {                                                                          \
-        if (clock_digit[pos] == num)                                           \
-            return pos;                                                        \
-        draw_digit(offset, num);                                               \
-    }
+/* Retruns 0 if not updated, 1 if updated. */
+inline int
+__digit_update(offset_t offset, int pos, int num) {
+    if (clock_digit[pos] == num)
+        return 0;
+    clock_digit[pos] = num;
+    draw_digit(offset, num);
+
+    return 1;
+}
 
 /**
  * 从右到左绘制数字，不包括分隔符（冒号）
@@ -41,9 +45,11 @@ clock_update(digits_t *clock, struct timeval *new_time, offset_t offset) {
     // 从右往左
     transpos(offset, (CLOCK_MIN_WIDTH - CLOCK_DIGIT_WIDTH), 0);
 
-    draw_digit_update(0, tmp->tm_min % 10);
+    if (!__digit_update(offset, 0, tmp->tm_min % 10))
+        return 0;
     transpos(offset, -(CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH), 0);
-    draw_digit_update(1, tmp->tm_min / 10);
+    if (!__digit_update(offset, 1, tmp->tm_min / 10))
+        return 1;
 
     // 跳过分隔符（冒号）
     transpos(offset, -2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH - 2), 0);
@@ -53,9 +59,11 @@ clock_update(digits_t *clock, struct timeval *new_time, offset_t offset) {
         tmp->tm_hour %= 12;
     }
 
-    draw_digit_update(2, tmp->tm_hour % 10);
+    if (!__digit_update(offset, 2, tmp->tm_hour % 10))
+        return 2;
     transpos(offset, -(CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH), 0);
-    draw_digit_update(3, tmp->tm_hour / 10);
+    if (!__digit_update(offset, 3, tmp->tm_hour / 10))
+        return 3;
 
     clock->tval = new_time;
 

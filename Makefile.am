@@ -6,6 +6,8 @@ ustb_clock_SOURCES = \
     src/net/http.c \
     src/net/tcp.c \
     src/net/socket.c \
+    src/sched/task.c \
+    src/sched/watcher.c \
     src/tui/calc.c \
     src/tui/digits.c \
     src/tui/draw.c \

@@ -23,7 +23,7 @@ info_init(info_t *info) {
      * 简而言之就是把第一次 info_fetch得到的数据复制到每一个元素
      */
     flow_t *current = info->flow_arr;
-    memcpy(current + 1, current, sizeof(flow_t) * (FLOW_NUM - 1));
+    memcpy(current + 1, current, FLOW_NUM - 1);
 
     return 0;
 }

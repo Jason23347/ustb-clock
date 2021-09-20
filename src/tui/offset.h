@@ -9,9 +9,8 @@ typedef struct {
 #define gotopos(offset) gotoxy(offset.left + 1, offset.top + 1)
 #define setpos(offset, x, y)                                                   \
     {                                                                          \
-        offset_t *tmp = &offset;                                           \
-        tmp->left = (x);                                                       \
-        tmp->top = (y);                                                        \
+        offset.left = (x);                                                     \
+        offset.top = (y);                                                      \
     }
 #define transpos(offset, x, y)                                                 \
     {                                                                          \

@@ -85,7 +85,7 @@ socket_connect(const char *ip, int port) {
 
     if (connect(fd, (const struct sockaddr *)&sa, len) < 0) {
         close(fd);
-        socket_error("%s: connect %s:%d erorr %s\r\n", __FUNCTION__, ip, port,
+        socket_error("%s: connect %s:%d error %s\r\n", __FUNCTION__, ip, port,
                      strerror(errno));
         return INVALID_SOCKET;
     }
