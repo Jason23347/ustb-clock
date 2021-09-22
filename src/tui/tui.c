@@ -16,7 +16,7 @@ tui_t tui_struct;
 
 offset_t clock_offset, date_offset, info_offset;
 
-pthread_mutex_t mux_draw;
+pthread_mutex_t mtx_draw;
 pthread_t clock_th, info_th, watcher_th;
 
 watcher_t watcher;
@@ -31,9 +31,9 @@ tui_restart(int sig) {
 
         clock_gettime(CLOCK_REALTIME, &tspec);
         tspec.tv_sec++;
-        pthread_mutex_timedlock(&mux_draw, &tspec);
+        pthread_mutex_timedlock(&mtx_draw, &tspec);
         tui_redraw(0);
-        pthread_mutex_unlock(&mux_draw);
+        pthread_mutex_unlock(&mtx_draw);
 
         struct itimerval timer = {0};
         setitimer(ITIMER_REAL, &timer, 0);
@@ -81,7 +81,7 @@ date_update(int num) {
 
     clock_gettime(CLOCK_REALTIME, &tspec);
     tspec.tv_sec++;
-    err = pthread_mutex_timedlock(&mux_draw, &tspec);
+    err = pthread_mutex_timedlock(&mtx_draw, &tspec);
     if (err) {
         // TODO handle error
     }
@@ -91,7 +91,7 @@ date_update(int num) {
 
     fflush(stdout);
 
-    pthread_mutex_unlock(&mux_draw);
+    pthread_mutex_unlock(&mtx_draw);
 
     return 0;
 }
@@ -126,7 +126,7 @@ tui_init() {
 
     tui_redraw(0);
 
-    pthread_mutex_init(&mux_draw, 0);
+    pthread_mutex_init(&mtx_draw, 0);
     pthread_create(&watcher_th, 0, &watcher_schedule, &watcher);
     pthread_create(&clock_th, 0, &clock_schedule, tui);
     pthread_create(&info_th, 0, &info_schedule, tui);
@@ -186,7 +186,7 @@ clock_schedule(void *arg) {
     for (;;) {
         clock_gettime(CLOCK_REALTIME, &tspec);
         tspec.tv_sec++;
-        err = pthread_mutex_timedlock(&mux_draw, &tspec);
+        err = pthread_mutex_timedlock(&mtx_draw, &tspec);
         if (err) {
             // TODO handle error
             debug("Lock error: %s", strerror(err));
@@ -199,7 +199,7 @@ clock_schedule(void *arg) {
 
         pthread_cond_signal(&watcher.cond);
 
-        pthread_mutex_unlock(&mux_draw);
+        pthread_mutex_unlock(&mtx_draw);
 
     next_tick:
         /* 对齐这一分钟的最后一秒 */
@@ -224,7 +224,7 @@ info_schedule(void *arg) {
 
         clock_gettime(CLOCK_REALTIME, &tspec);
         tspec.tv_sec++;
-        err = pthread_mutex_timedlock(&mux_draw, &tspec);
+        err = pthread_mutex_timedlock(&mtx_draw, &tspec);
         if (err) {
             // TODO handle error
             goto next_tick;
@@ -232,7 +232,7 @@ info_schedule(void *arg) {
         info_redraw(&tui->info, info_offset);
         fflush(stdout);
 
-        pthread_mutex_unlock(&mux_draw);
+        pthread_mutex_unlock(&mtx_draw);
 
     next_tick:
         /* update every INFO_REFRESH_INTERVAL seconds */
