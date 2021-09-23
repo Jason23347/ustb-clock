@@ -220,7 +220,9 @@ info_schedule(void *arg) {
     struct timespec tspec;
 
     for (;;) {
-        info_fetch(&tui->info);
+        if (info_fetch(&tui->info) == -1) {
+            goto next_tick;
+        }
 
         clock_gettime(CLOCK_REALTIME, &tspec);
         tspec.tv_sec++;
