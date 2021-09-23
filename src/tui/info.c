@@ -61,7 +61,10 @@ flow_record(flow_t *flow, unsigned long down_flow) {
     gettimeofday(&flow->tval, 0);
 }
 
-/* 读书人的事怎么能说是爬虫呢 */
+/**
+ * 读书人的事怎么能说是爬虫呢.
+ * Returns 0 if succeed, -1 if not.
+ */
 int
 info_fetch(info_t *info) {
     unsigned long flow;
@@ -100,9 +103,11 @@ info_fetch(info_t *info) {
 void
 info_redraw(info_t *info, offset_t offset) {
     calc_t calc_arr[1], *calc = &calc_arr[0];
+    int cur = info->curr_flow;
+
     /* Download speed */
-    draw_line(offset, "Download:",
-              calc_speed(calc, flow_speed(info->flow_arr, info->curr_flow)),
+    draw_line(offset,
+              "Download:", calc_speed(calc, flow_speed(info->flow_arr, cur)),
               CLOCK_INFO_WIDTH);
     next_line(offset);
     /* IPV6 */
@@ -110,8 +115,10 @@ info_redraw(info_t *info, offset_t offset) {
               CLOCK_INFO_WIDTH);
     next_line(offset);
     /* IPV4 Flow */
+    if (--cur < 0)
+        cur = FLOW_NUM - 1;
     draw_line(offset, "IPV4 Flow:",
-              calc_flow(calc, info->flow_arr[info->curr_flow].download),
+              calc_flow(calc, info->flow_arr[cur].download),
               CLOCK_INFO_WIDTH);
     next_line(offset);
     /* Fee Left */
