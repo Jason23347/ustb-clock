@@ -125,5 +125,7 @@ info_redraw(info_t *info, offset_t offset) {
     draw_line(offset, "Fee Left:", calc_fee(calc, info->fee), CLOCK_INFO_WIDTH);
     next_line(offset);
 
+    hidecursor();
+
     gotoxy(0, 0);
 }

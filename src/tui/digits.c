@@ -67,6 +67,8 @@ clock_update(digits_t *clock, struct timeval *new_time, offset_t offset) {
 
     clock->tval = new_time;
 
+    hidecursor();
+
     return 4;
 }
 
@@ -78,4 +80,6 @@ clock_redraw(digits_t *clock, struct timeval *new_time, offset_t offset) {
 
     transpos(offset, 2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH) - 2, 0);
     draw_digit(offset, -1);
+
+    hidecursor();
 }

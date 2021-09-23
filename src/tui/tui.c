@@ -122,8 +122,6 @@ tui_init() {
     task_init(&task, DAILY, date_update);
     watcher_register(&watcher, task);
 
-    hidecursor();
-
     tui_redraw(0);
 
     pthread_mutex_init(&mtx_draw, 0);
@@ -145,20 +143,18 @@ tui_redraw(int num) {
     char date_str[CLOCK_DATE_LEN];
 
     /* Clear screen */
+    hidecursor();
     clear();
 
     // TODO check for minheight and minwidth
     int padding_y = (tui->win.ws_row - CLOCK_MIN_HEIGHT) / 2;
-
     setpos(clock_offset, (tui->win.ws_col - CLOCK_MIN_WIDTH) / 2, padding_y);
 
     gettimeofday(&tval, 0);
-
     clock_redraw(&tui->clock, &tval, clock_offset);
 
-    padding_y += CLOCK_DIGIT_HEIGHT;
-
     /* draw date */
+    padding_y += CLOCK_DIGIT_HEIGHT;
     current_date(date_str);
     setpos(date_offset, (tui->win.ws_col - strlen(date_str)) / 2, padding_y);
 
