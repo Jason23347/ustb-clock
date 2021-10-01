@@ -5,7 +5,7 @@
 #include <string.h>
 
 /* 取整 */
-#define round(n) (unsigned long)(n + 0.5)
+#define round(n) (long)(n + 0.5)
 
 /* 根据 fee 设置颜色 */
 inline int
@@ -21,11 +21,11 @@ __color_fee(unsigned fee) {
 
 /* 手动添加小数点，保留两位小数 */
 const char *
-__calc_decimal(char *str, size_t maxlen, unsigned long number, size_t n) {
+__calc_decimal(char *str, size_t maxlen, long number, size_t n) {
     size_t len;
     int tmp;
 
-    snprintf(str, maxlen, "%lu", number);
+    snprintf(str, maxlen, "%ld", number);
     len = strlen(str);
     tmp = len - n;
     if (tmp < 1) {
@@ -59,7 +59,8 @@ calc_flow(calc_t *calc, unsigned long flow) {
     }
 
     /* gbflow = 100 代表 1G */
-    unsigned long gbflow = round((float)flow * 100 / 1048576);
+    long gbflow = round((float)flow * 100 / 1048576);
+    // FIXME 本月流量小于1G时不能显示为-50
     if (gbflow < 100) {
         __calc_decimal(calc->str, sizeof(calc->str), flow, 2);
         strncat(calc->str, " MB", sizeof(calc->str));
