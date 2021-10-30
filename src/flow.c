@@ -52,5 +52,9 @@ flow_speed(flow_t arr[FLOW_NUM], int current_flow) {
         res += w * flow->speed;
     }
 
+    /* FIXME 谜之bug，出现奇大无比的负值 */
+    if (cur->speed < 0)
+        cur->speed = 0;
+
     return round(cur->speed * 1000000.0);
 }
