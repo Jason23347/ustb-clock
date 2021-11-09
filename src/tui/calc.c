@@ -7,6 +7,9 @@
 /* 取整 */
 #define round(n) (long)(n + 0.5)
 
+/* 绝对值 */
+#define abs(n) ((n > 0) ? n : -n)
+
 /* 根据 fee 设置颜色 */
 inline int
 __color_fee(unsigned fee) {
@@ -59,16 +62,15 @@ calc_flow(calc_t *calc, unsigned long flow) {
     }
 
     /* gbflow = 100 代表 1G */
-    long gbflow = round((float)flow * 100 / 1048576);
+    /* 前 50G 免费，所以显示剩余免费额度或已付费流量 */
+    long gbflow = round((float)flow * 100 / 1048576) - 5000;
     // FIXME 本月流量小于1G时不能显示为-50
-    if (gbflow < 100) {
-        __calc_decimal(calc->str, sizeof(calc->str), flow, 2);
+    if (abs(flow) < 100) {
+        __calc_decimal(calc->str, sizeof(calc->str), round((float)flow / 1024),
+                       2);
         strncat(calc->str, " MB", sizeof(calc->str));
         calc->color = NORMAL;
     } else {
-        /* 前 50G 免费，所以显示剩余免费额度或已付费流量 */
-        gbflow -= 5000;
-
         __calc_decimal(calc->str, sizeof(calc->str), gbflow, 2);
         strncat(calc->str, " GB", sizeof(calc->str));
         calc->color = NORMAL;
@@ -80,10 +82,20 @@ calc_flow(calc_t *calc, unsigned long flow) {
 /* 计算流量下载速度 */
 calc_t *
 calc_speed(calc_t *calc, unsigned long flow) {
-    if (flow < 8)
-        flow = 0;
-    calc_flow(calc, flow);
-    strncat(calc->str, "/s", sizeof(calc->str));
+    if (flow <= 1024) {
+        snprintf(calc->str, sizeof(calc->str), "%lu KB/s", flow);
+    } else {
+        snprintf(calc->str, sizeof(calc->str), "%.2lf MB/s",
+                 (float)flow / 1024);
+    }
+
+    if (flow <= 10240) {
+        calc->color = NORMAL;
+    } else if (flow <= 1024 * 20) {
+        calc->color = YELLOW;
+    } else {
+        calc->color = RED;
+    }
 
     return calc;
 }
