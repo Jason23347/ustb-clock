@@ -64,7 +64,6 @@ calc_flow(calc_t *calc, unsigned long flow) {
     /* gbflow = 100 代表 1G */
     /* 前 50G 免费，所以显示剩余免费额度或已付费流量 */
     long gbflow = round((float)flow * 100 / 1048576) - 5000;
-    // FIXME 本月流量小于1G时不能显示为-50
     if (abs(flow) < 100) {
         __calc_decimal(calc->str, sizeof(calc->str), round((float)flow / 1024),
                        2);
@@ -85,6 +84,9 @@ calc_speed(calc_t *calc, unsigned long flow) {
     if (flow <= 1024) {
         snprintf(calc->str, sizeof(calc->str), "%lu KB/s", flow);
     } else {
+        /* FIXME 偶尔出现的超大数字，暂时用上界屏蔽了 */
+        if (flow > 204800) /* 200 MB/s */
+            flow = 0;
         snprintf(calc->str, sizeof(calc->str), "%.2lf MB/s",
                  (float)flow / 1024);
     }
