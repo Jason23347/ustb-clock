@@ -91,9 +91,9 @@ calc_speed(calc_t *calc, unsigned long flow) {
                  (float)flow / 1024);
     }
 
-    if (flow <= 10240) {
+    if (flow <= 1024) {
         calc->color = NORMAL;
-    } else if (flow <= 1024 * 20) {
+    } else if (flow <= 1024 * 6) {
         calc->color = YELLOW;
     } else {
         calc->color = RED;
