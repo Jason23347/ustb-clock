@@ -25,27 +25,26 @@ __color_fee(unsigned fee) {
 /* 手动添加小数点，保留两位小数 */
 const char *
 __calc_decimal(char *str, size_t maxlen, long number, size_t n) {
-    size_t len;
-    int tmp;
     char *s;
+    size_t len;
 
-    snprintf(str, maxlen, "%ld", number);
-    // 不处理负号
-    if (number > 0)
-        s = str;
-    else
-        s = str + 1;
-
-    len = strlen(s);
-    tmp = len - n;
-    if (tmp < 1) {
-        strncpy(s + 1 - tmp, s, len);
-        memset(s, '0', 1 - tmp);
-        tmp = 3 - n;
+    // 先处理负号
+    s = str;
+    if (number < 0) {
+        *s = '-';
+        s++;
+        maxlen--;
+        number = -number;
     }
-    strncpy(s + tmp + 1, s + tmp, 2);
-    s[tmp] = '.';
-    s[tmp + 3] = '\0';
+
+    // 处理小数点
+    snprintf(s, maxlen, "%03ld", number);
+    len = strlen(s);
+    // 小数点后两位向右平移
+    s += len - n;
+    strncpy(s + 1, s, 2);
+    s[0] = '.';
+    s[3] = '\0';
 
     return str;
 }
