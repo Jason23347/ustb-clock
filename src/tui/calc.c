@@ -27,18 +27,25 @@ const char *
 __calc_decimal(char *str, size_t maxlen, long number, size_t n) {
     size_t len;
     int tmp;
+    char *s;
 
     snprintf(str, maxlen, "%ld", number);
-    len = strlen(str);
+    // 不处理负号
+    if (number > 0)
+        s = str;
+    else
+        s = str + 1;
+
+    len = strlen(s);
     tmp = len - n;
     if (tmp < 1) {
-        strncpy(str + 1 - tmp, str, len);
-        memset(str, '0', 1 - tmp);
+        strncpy(s + 1 - tmp, s, len);
+        memset(s, '0', 1 - tmp);
         tmp = 3 - n;
     }
-    strncpy(str + tmp + 1, str + tmp, 2);
-    str[tmp] = '.';
-    str[tmp + 3] = '\0';
+    strncpy(s + tmp + 1, s + tmp, 2);
+    s[tmp] = '.';
+    s[tmp + 3] = '\0';
 
     return str;
 }
@@ -81,7 +88,7 @@ calc_flow(calc_t *calc, unsigned long flow) {
 /* 计算流量下载速度 */
 calc_t *
 calc_speed(calc_t *calc, unsigned long flow) {
-    if (flow <= 1024) {
+    if (flow < 1000) {
         snprintf(calc->str, sizeof(calc->str), "%lu KB/s", flow);
     } else {
         /* FIXME 偶尔出现的超大数字，暂时用上界屏蔽了 */
