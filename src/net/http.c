@@ -1,12 +1,27 @@
 #include "http.h"
 #include "tcp.h"
 
+#include <stdlib.h>
 #include <string.h>
 
-#define HTTP_TIMEOUT 30
+inline
+const char *
+__http_header(const char *str, const char *header) {
+    char *p, *end;
+    if ((p = strstr(str, header)) == NULL)
+        return NULL;
+    if ((end = strstr(p, "\r\n")) == NULL)
+        return NULL;
+    *end = '\0';
+
+    return p + strlen(header);
+}
 
 int
 http_get(http_t *http) {
+    const char *slen;
+    size_t len = 0;
+
     /* 开启一个 tcp socket */
     if (tcp_connect(&http->conn, http->ip, http->port) == -1) {
         return -1;
@@ -21,20 +36,46 @@ http_get(http_t *http) {
         return -1;
     }
 
-    /* 因为没有实现对 Content-Length 的支持，
-       所以最多接受 MAX_BUFF_SIZE 个字节的数据。 */
-    size_t len = 0;
-    char tmp[64]; /* buffer for buffer */
-    for (char *p = http->buff; len < MAX_BUFF_SIZE;) {
-        int n = tcp_read(&http->conn, tmp, 64);
-        if (n <= 0) {
-            break;
+    /* 截至 \r\n\r\n 之前，包含所有 Headers */
+
+    /**
+     * 用于判断 Headers 结尾
+     *
+     * 0001 for ""
+     * 0010 for "\r"
+     * 0100 for "\r\n"
+     * 1000 for "\r\n\r"
+     * 0000 for "\r\n\r\n"
+     */
+    // TODO 自定义类型int8
+    char flag = 0x01;
+    for (char *s = http->buff;; s++) {
+        if (tcp_read(&http->conn, s, 1) <= 0) {
+            // Connection gone.
+            return -1;
         }
-        strncpy(p, tmp,
-                ((len + n) > MAX_BUFF_SIZE) ? (MAX_BUFF_SIZE - len) : n);
-        len += n;
-        p += n;
+
+        if (*s == '\r' && (flag & 0x05)) {
+            flag = flag << 1;
+        } else if (*s == '\n' && (flag & 0x0a)) {
+            flag = flag << 1;
+        } else {
+            /* 请求头全部转小写 */
+            if (*s > 'A' && *s < 'Z')
+                *s += 0x20;
+            /* 重置 flag */
+            flag = 0x01;
+        }
+
+        /* 当 flag 后四位为0时说明 Headers 部分结束 */
+        if (!(flag & 0x0f))
+            break;
     }
+
+    slen = __http_header(http->buff, "content-length:");
+    len = atoi(slen);
+
+    tcp_read(&http->conn, http->buff, len);
 
     /* 关闭 tcp socket */
     tcp_close(&http->conn);
