@@ -4,9 +4,13 @@
 #include "color.h"
 #include "draw.h"
 #include <string.h>
+#include <pthread.h>
+#include <sys/time.h>
+
+pthread_mutex_t mtx_draw;
 
 inline void
-draw_space(int length) {
+__draw_space(int length) {
     for (int i = 0; i < length; i++) {
         printf(" ");
     }
@@ -17,7 +21,7 @@ draw_line(offset_t offset, const char *prompt, const calc_t *value,
           int length) {
     gotopos(offset);
     printf("%s", prompt);
-    draw_space(length - strlen(prompt) - strlen(value->str));
+    __draw_space(length - strlen(prompt) - strlen(value->str));
     set_color(value->color);
     printf("%s", value->str);
     reset_color();
@@ -103,4 +107,26 @@ void
 date_redraw(offset_t offset, const char *date_str) {
     gotopos(offset);
     printf("%s", date_str);
+}
+
+int draw_lock_init() {
+    return pthread_mutex_init(&mtx_draw, 0);
+}
+
+int draw_lock() {
+    return pthread_mutex_lock(&mtx_draw);
+}
+
+int
+draw_timedlock() {
+    struct timespec tspec;
+
+    clock_gettime(CLOCK_REALTIME, &tspec);
+    tspec.tv_sec++;
+    return pthread_mutex_timedlock(&mtx_draw, &tspec);
+}
+
+int
+draw_unlock() {
+    return pthread_mutex_unlock(&mtx_draw);
 }
