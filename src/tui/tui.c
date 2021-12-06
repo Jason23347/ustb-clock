@@ -9,15 +9,15 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "digits.h"
 #include "date.h"
+#include "digits.h"
 #include "info.h"
 
 #include "sched/watcher.h"
 
 tui_t tui_struct;
 
-offset_t clock_offset, info_offset;
+offset_t clock_offset;
 
 pthread_t clock_th, info_th, watcher_th;
 
@@ -154,9 +154,9 @@ tui_redraw(int num) {
     date_setpos((tui->win.ws_col - strlen(date_str)) / 2, padding_y);
     date_redraw(date_str);
 
-    setpos(info_offset, (tui->win.ws_col - CLOCK_INFO_WIDTH) / 2,
-           padding_y + 2); /* height of date is 2 */
-    info_redraw(&tui->info, info_offset);
+    info_setpos((tui->win.ws_col - CLOCK_INFO_WIDTH) / 2,
+                padding_y + 2); /* height of date is 2 */
+    info_redraw(&tui->info);
 
     gotoxy(0, 0);
 
@@ -215,7 +215,7 @@ info_schedule(void *arg) {
             // TODO handle error
             goto next_tick;
         }
-        info_redraw(&tui->info, info_offset);
+        info_redraw(&tui->info);
         fflush(stdout);
 
         draw_unlock();

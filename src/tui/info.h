@@ -1,8 +1,8 @@
 #ifndef INFO_H
 #define INFO_H
 
-#include "flow.h"
 #include "draw.h"
+#include "flow.h"
 
 typedef struct {
     int curr_flow;
@@ -13,6 +13,8 @@ typedef struct {
 
 int info_init(info_t *info);
 int info_fetch(info_t *info);
-void info_redraw(info_t *info, offset_t offset);
+
+void info_setpos(int x, int y);
+void info_redraw(info_t *info);
 
 #endif /* INFO_H */

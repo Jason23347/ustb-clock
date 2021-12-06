@@ -7,6 +7,8 @@
 #include "net/http.h"
 #include <string.h>
 
+offset_t info_offset;
+
 int
 info_init(info_t *info) {
     memset(info, 0, sizeof(info_t));
@@ -99,11 +101,16 @@ info_fetch(info_t *info) {
     return 0;
 }
 
+void info_setpos(int x, int y) {
+    setpos(info_offset, x, y);
+}
+
 /* 重绘 info */
 void
-info_redraw(info_t *info, offset_t offset) {
+info_redraw(info_t *info) {
     calc_t calc_arr[1], *calc = &calc_arr[0];
     int cur = info->curr_flow;
+    offset_t offset = info_offset;
 
     /* Download speed */
     draw_line(offset,
@@ -117,8 +124,8 @@ info_redraw(info_t *info, offset_t offset) {
     /* IPV4 Flow */
     if (--cur < 0)
         cur = FLOW_NUM - 1;
-    draw_line(offset, "IPV4 Flow:",
-              calc_flow(calc, info->flow_arr[cur].download),
+    draw_line(offset,
+              "IPV4 Flow:", calc_flow(calc, info->flow_arr[cur].download),
               CLOCK_INFO_WIDTH);
     next_line(offset);
     /* Fee Left */
