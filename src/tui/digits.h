@@ -1,5 +1,5 @@
-#ifndef CLOCK_H
-#define CLOCK_H
+#ifndef DIGITS_H
+#define DIGITS_H
 
 #define CLOCK_BLOCK_WIDTH (2 + 3 * CLOCK_DOT_WIDTH)
 #define CLOCK_DOTS_OFFSET (CLOCK_SPACE_WIDTH * 2 / 3)
@@ -22,7 +22,7 @@
 
 #endif /* CLOCK_CONDENSE */
 
-#include "offset.h"
+#include "draw.h"
 
 #include <sys/time.h>
 
@@ -43,6 +43,4 @@ int clock_update(digits_t *clock, struct timeval *new_time, offset_t offset);
 void clock_redraw(digits_t *clock, struct timeval *new_time, offset_t offset);
 void clock_draw_digit(int digit);
 
-const char *current_date(char *str);
-
-#endif /* CLOCK_H */
+#endif /* DIGITS_H */

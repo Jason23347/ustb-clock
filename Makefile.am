@@ -9,6 +9,7 @@ ustb_clock_SOURCES = \
     src/sched/task.c \
     src/sched/watcher.c \
     src/tui/calc.c \
+    src/tui/date.c \
     src/tui/digits.c \
     src/tui/draw.c \
     src/tui/info.c \

@@ -1,20 +1,11 @@
 #include "conf.h"
 
 #include "digits.h"
-#include "draw.h"
 
 #include <string.h>
 #include <time.h>
 
 int clock_digit[4] = {-1, -1, -1, -1};
-
-const char *
-current_date(char str[CLOCK_DATE_LEN]) {
-    time_t arr[1], *cur_time = &arr[0];
-    time(cur_time);
-    strftime(str, CLOCK_DATE_LEN, CLOCK_DATE_FORMAT, localtime(cur_time));
-    return str;
-}
 
 int
 clock_init(digits_t *clock) {

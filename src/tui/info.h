@@ -2,7 +2,7 @@
 #define INFO_H
 
 #include "flow.h"
-#include "offset.h"
+#include "draw.h"
 
 typedef struct {
     int curr_flow;

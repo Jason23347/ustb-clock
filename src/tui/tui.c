@@ -1,15 +1,16 @@
 #include "conf.h"
 
-#include "tui.h"
-
-#include "draw.h"
-#include "sched/watcher.h"
 #include <pthread.h>
 #include <signal.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+
+#include "tui.h"
+#include "date.h"
+#include "draw.h"
+#include "sched/watcher.h"
 
 tui_t tui_struct;
 
@@ -78,7 +79,7 @@ date_update(int num) {
         // TODO handle error
     }
 
-    current_date(date_str);
+    date_fmt(date_str);
     date_redraw(date_offset, date_str);
 
     fflush(stdout);
@@ -147,7 +148,7 @@ tui_redraw(int num) {
 
     /* draw date */
     padding_y += CLOCK_DIGIT_HEIGHT;
-    current_date(date_str);
+    date_fmt(date_str);
     setpos(date_offset, (tui->win.ws_col - strlen(date_str)) / 2, padding_y);
 
     date_redraw(date_offset, date_str);

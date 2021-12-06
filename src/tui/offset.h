@@ -1,6 +1,10 @@
 #ifndef OFFSET_H
 #define OFFSET_H
 
+#ifndef DRAW_H
+#error "Never use offset.h directly; include draw.h instead."
+#endif
+
 typedef struct {
     unsigned left;
     unsigned top;

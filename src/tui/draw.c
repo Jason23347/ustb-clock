@@ -103,12 +103,6 @@ draw_digit(offset_t offset, int digit) {
     }
 }
 
-void
-date_redraw(offset_t offset, const char *date_str) {
-    gotopos(offset);
-    printf("%s", date_str);
-}
-
 int draw_lock_init() {
     return pthread_mutex_init(&mtx_draw, 0);
 }
