@@ -20,7 +20,6 @@
 void draw_line(offset_t offset, const char *prompt, const calc_t *value,
                int length);
 void draw_digit(offset_t offset, int digit);
-void date_redraw(offset_t offset, const char *date_str);
 
 int draw_lock_init();
 int draw_lock();
