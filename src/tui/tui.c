@@ -17,8 +17,6 @@
 
 tui_t tui_struct;
 
-offset_t clock_offset;
-
 pthread_t clock_th, info_th, watcher_th;
 
 watcher_t watcher;
@@ -104,7 +102,7 @@ tui_init() {
 
     ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->win);
 
-    clock_init(&tui->clock);
+    digits_init(&tui->clock);
     info_init(&tui->info);
 
     /* 初始化watcher */
@@ -121,7 +119,7 @@ tui_init() {
 
     draw_lock_init();
     pthread_create(&watcher_th, 0, &watcher_schedule, &watcher);
-    pthread_create(&clock_th, 0, &clock_schedule, tui);
+    pthread_create(&clock_th, 0, &digits_schedule, tui);
     pthread_create(&info_th, 0, &info_schedule, tui);
 
     /* 等了个寂寞 */
@@ -143,10 +141,10 @@ tui_redraw(int num) {
 
     // TODO check for minheight and minwidth
     int padding_y = (tui->win.ws_row - CLOCK_MIN_HEIGHT) / 2;
-    setpos(clock_offset, (tui->win.ws_col - CLOCK_MIN_WIDTH) / 2, padding_y);
+    digits_setpos((tui->win.ws_col - CLOCK_MIN_WIDTH) / 2, padding_y);
 
     gettimeofday(&tval, 0);
-    clock_redraw(&tui->clock, &tval, clock_offset);
+    digits_redraw(&tui->clock, &tval);
 
     /* draw date */
     padding_y += CLOCK_DIGIT_HEIGHT;
@@ -166,7 +164,7 @@ tui_redraw(int num) {
 }
 
 void *
-clock_schedule(void *arg) {
+digits_schedule(void *arg) {
     tui_t *tui = arg;
 
     int err;
@@ -181,7 +179,7 @@ clock_schedule(void *arg) {
         }
 
         gettimeofday(&tval, 0);
-        watcher.num = clock_update(&tui->clock, &tval, clock_offset);
+        watcher.num = digits_update(&tui->clock, &tval);
         fflush(stdout);
 
         pthread_cond_signal(&watcher.cond);

@@ -5,17 +5,19 @@
 #include <string.h>
 #include <time.h>
 
+offset_t digits_offset;
+
 int clock_digit[4] = {-1, -1, -1, -1};
 
 int
-clock_init(digits_t *clock) {
+digits_init(digits_t *clock) {
     clock->tval = &clock->tval_arr[0];
     return 0;
 }
 
 /* Retruns 0 if not updated, 1 if updated. */
 int
-digit_update(offset_t offset, int pos, int num) {
+__digit_update(offset_t offset, int pos, int num) {
     if (clock_digit[pos] == num)
         return 0;
     clock_digit[pos] = num;
@@ -30,16 +32,17 @@ digit_update(offset_t offset, int pos, int num) {
  * @return 更新的数字位数
  */
 int
-clock_update(digits_t *clock, struct timeval *new_time, offset_t offset) {
+digits_update(digits_t *clock, struct timeval *new_time) {
+    offset_t offset = digits_offset;
     struct tm *tmp = localtime(&new_time->tv_sec);
 
     // 从右往左
     transpos(offset, (CLOCK_MIN_WIDTH - CLOCK_DIGIT_WIDTH), 0);
 
-    if (!digit_update(offset, 0, tmp->tm_min % 10))
+    if (!__digit_update(offset, 0, tmp->tm_min % 10))
         return 0;
     transpos(offset, -(CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH), 0);
-    if (!digit_update(offset, 1, tmp->tm_min / 10))
+    if (!__digit_update(offset, 1, tmp->tm_min / 10))
         return 1;
 
     // 跳过分隔符（冒号）
@@ -50,10 +53,10 @@ clock_update(digits_t *clock, struct timeval *new_time, offset_t offset) {
         tmp->tm_hour %= 12;
     }
 
-    if (!digit_update(offset, 2, tmp->tm_hour % 10))
+    if (!__digit_update(offset, 2, tmp->tm_hour % 10))
         return 2;
     transpos(offset, -(CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH), 0);
-    if (!digit_update(offset, 3, tmp->tm_hour / 10))
+    if (!__digit_update(offset, 3, tmp->tm_hour / 10))
         return 3;
 
     clock->tval = new_time;
@@ -63,11 +66,17 @@ clock_update(digits_t *clock, struct timeval *new_time, offset_t offset) {
     return 4;
 }
 
+void digits_setpos(int x, int y) {
+    setpos(digits_offset, x, y);
+}
+
 /* 从右到左绘制数字和分隔符（冒号） */
 void
-clock_redraw(digits_t *clock, struct timeval *new_time, offset_t offset) {
+digits_redraw(digits_t *clock, struct timeval *new_time) {
+    offset_t offset = digits_offset;
+
     memset(&clock_digit, -1, sizeof(clock_digit));
-    clock_update(clock, new_time, offset);
+    digits_update(clock, new_time);
 
     transpos(offset, 2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH) - 2, 0);
     draw_digit(offset, -1);

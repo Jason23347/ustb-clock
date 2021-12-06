@@ -16,7 +16,7 @@ typedef struct {
 int tui_init();
 void *tui_redraw(int num);
 
-void *clock_schedule(void *arg);
+void *digits_schedule(void *arg);
 void *info_schedule(void *arg);
 
 #endif /* TUI_H */
