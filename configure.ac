@@ -48,6 +48,8 @@ AC_CHECK_HEADERS([ \
 ])
 
 # Checks for typedefs, structures, and compiler characteristics.
+AC_C_INLINE
+AC_TYPE_SIZE_T
 
 # POSIX types
 AC_TYPE_SIZE_T
@@ -55,7 +57,15 @@ AC_TYPE_SSIZE_T
 
 # Checks for library functions.
 AX_PTHREAD()
-AC_CHECK_FUNCS([gettimeofday memset strchr strerror])
+AC_CHECK_FUNCS([ \
+    clock_gettime \
+    gettimeofday \
+    memset \
+    socket \
+    strchr \
+    strerror \
+    strstr \
+])
 
 LIBS="$LIBS -lpthread"
 
