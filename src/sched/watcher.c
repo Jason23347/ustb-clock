@@ -43,3 +43,8 @@ watcher_schedule(void *arg) {
         pthread_mutex_unlock(&watcher->mtx);
     }
 }
+
+int
+watcher_awake(watcher_t *watcher) {
+    return pthread_cond_signal(&watcher->cond);
+}

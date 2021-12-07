@@ -108,9 +108,16 @@ void info_setpos(int x, int y) {
 /* 重绘 info */
 void
 info_redraw(info_t *info) {
+    int err;
     calc_t calc_arr[1], *calc = &calc_arr[0];
     int cur = info->curr_flow;
     offset_t offset = info_offset;
+
+    err = draw_timedlock();
+    if (err) {
+        debug("%s: Lock error: %s", __FUNCTION__, strerror(err));
+        return;
+    }
 
     /* Download speed */
     draw_line(offset,
@@ -133,6 +140,9 @@ info_redraw(info_t *info) {
     next_line(offset);
 
     hidecursor();
-
     gotoxy(0, 0);
+
+    fflush(stdout);
+
+    draw_unlock();
 }

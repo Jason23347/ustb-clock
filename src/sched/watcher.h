@@ -18,5 +18,6 @@ typedef struct {
 const watcher_t *watcher_init(watcher_t *watcher);
 void watcher_register(watcher_t *watcher, task_t task);
 void *watcher_schedule(void *arg);
+int watcher_awake(watcher_t *watcher);
 
 #endif /* WATCHER_H */

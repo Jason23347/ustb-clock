@@ -1,6 +1,7 @@
 #include "conf.h"
 
 #include <time.h>
+#include <string.h>
 
 #include "date.h"
 
@@ -16,8 +17,17 @@ date_fmt(char str[CLOCK_DATE_LEN]) {
 
 void
 date_redraw(const char *date_str) {
+    int err = draw_timedlock();
+    if (err) {
+        debug("%s: Lock error: %s", __FUNCTION__, strerror(err));
+        return;
+    }
+
     gotopos(date_offset);
     printf("%s", date_str);
+    fflush(stdout);
+
+    draw_unlock();
 }
 
 void

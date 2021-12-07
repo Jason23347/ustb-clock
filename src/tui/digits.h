@@ -38,10 +38,10 @@ typedef struct {
     struct timeval tval_arr[1];
 } digits_t;
 
-int digits_init(digits_t *clock);
-int digits_update(digits_t *clock, struct timeval *new_time);
+int digits_init(digits_t *digits);
+int digits_update(digits_t *digits, struct timeval *new_time);
 void digits_setpos(int x, int y);
-void digits_redraw(digits_t *clock, struct timeval *new_time);
+void digits_redraw(digits_t *digits, struct timeval *new_time);
 void clock_draw_digit(int digit);
 
 #endif /* DIGITS_H */

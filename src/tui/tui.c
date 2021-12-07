@@ -28,9 +28,7 @@ tui_restart(int sig) {
     if (sig == SIGALRM) {
         ioctl(STDIN_FILENO, TIOCGWINSZ, &tui_struct.win);
 
-        draw_timedlock();
         tui_redraw(0);
-        draw_unlock();
 
         struct itimerval timer = {0};
         setitimer(ITIMER_REAL, &timer, 0);
@@ -72,20 +70,8 @@ handle_abort(int signal) {
 
 void *
 date_update(int num) {
-    int err;
     char date_str[CLOCK_DATE_LEN];
-
-    err = draw_timedlock();
-    if (err) {
-        // TODO handle error
-    }
-
     date_redraw(date_fmt(date_str));
-
-    fflush(stdout);
-
-    draw_unlock();
-
     return 0;
 }
 
@@ -115,12 +101,12 @@ tui_init() {
     task_init(&task, DAILY, date_update);
     watcher_register(&watcher, task);
 
+    draw_lock_init();
     tui_redraw(0);
 
-    draw_lock_init();
     pthread_create(&watcher_th, 0, &watcher_schedule, &watcher);
-    pthread_create(&clock_th, 0, &digits_schedule, tui);
-    pthread_create(&info_th, 0, &info_schedule, tui);
+    pthread_create(&clock_th, 0, &digits_schedule, &tui->clock);
+    pthread_create(&info_th, 0, &info_schedule, &tui->info);
 
     /* 等了个寂寞 */
     pthread_join(clock_th, 0);
@@ -131,9 +117,9 @@ tui_init() {
 /* Compat to task initialization */
 void *
 tui_redraw(int num) {
-    tui_t *tui = &tui_struct;
     struct timeval tval;
     char date_str[CLOCK_DATE_LEN];
+    tui_t *tui = &tui_struct;
 
     /* Clear screen */
     hidecursor();
@@ -157,7 +143,6 @@ tui_redraw(int num) {
     info_redraw(&tui->info);
 
     gotoxy(0, 0);
-
     fflush(stdout);
 
     return 0;
@@ -165,26 +150,17 @@ tui_redraw(int num) {
 
 void *
 digits_schedule(void *arg) {
-    tui_t *tui = arg;
-
-    int err;
+    digits_t *digits = arg;
     struct timeval tval;
 
     for (;;) {
-        err = draw_timedlock();
-        if (err) {
-            // TODO handle error
-            debug("Lock error: %s", strerror(err));
+        gettimeofday(&tval, 0);
+        watcher.num = digits_update(digits, &tval);
+        if (watcher.num < 0) {
             goto next_tick;
         }
 
-        gettimeofday(&tval, 0);
-        watcher.num = digits_update(&tui->clock, &tval);
-        fflush(stdout);
-
-        pthread_cond_signal(&watcher.cond);
-
-        draw_unlock();
+        watcher_awake(&watcher);
 
     next_tick:
         /* 对齐这一分钟的最后一秒 */
@@ -198,25 +174,15 @@ digits_schedule(void *arg) {
 
 void *
 info_schedule(void *arg) {
-    tui_t *tui = arg;
-
-    int err;
     struct timeval tval;
+    info_t *info = arg;
 
     for (;;) {
-        if (info_fetch(&tui->info) == -1) {
+        if (info_fetch(info) == -1) {
             goto next_tick;
         }
 
-        err = draw_timedlock();
-        if (err) {
-            // TODO handle error
-            goto next_tick;
-        }
-        info_redraw(&tui->info);
-        fflush(stdout);
-
-        draw_unlock();
+        info_redraw(info);
 
     next_tick:
         /* update every INFO_REFRESH_INTERVAL seconds */

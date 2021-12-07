@@ -10,8 +10,8 @@ offset_t digits_offset;
 int clock_digit[4] = {-1, -1, -1, -1};
 
 int
-digits_init(digits_t *clock) {
-    clock->tval = &clock->tval_arr[0];
+digits_init(digits_t *digits) {
+    digits->tval = &digits->tval_arr[0];
     return 0;
 }
 
@@ -32,18 +32,27 @@ __digit_update(offset_t offset, int pos, int num) {
  * @return 更新的数字位数
  */
 int
-digits_update(digits_t *clock, struct timeval *new_time) {
+digits_update(digits_t *digits, struct timeval *new_time) {
+    int rtn = -1;
     offset_t offset = digits_offset;
     struct tm *tmp = localtime(&new_time->tv_sec);
 
+    if (draw_timedlock()) {
+        return -1;
+    }
+
     // 从右往左
     transpos(offset, (CLOCK_MIN_WIDTH - CLOCK_DIGIT_WIDTH), 0);
+    if (!__digit_update(offset, 0, tmp->tm_min % 10)) {
+        rtn = 0;
+        goto end;
+    }
 
-    if (!__digit_update(offset, 0, tmp->tm_min % 10))
-        return 0;
     transpos(offset, -(CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH), 0);
-    if (!__digit_update(offset, 1, tmp->tm_min / 10))
-        return 1;
+    if (!__digit_update(offset, 1, tmp->tm_min / 10)) {
+        rtn = 1;
+        goto end;
+    }
 
     // 跳过分隔符（冒号）
     transpos(offset, -2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH - 2), 0);
@@ -53,33 +62,44 @@ digits_update(digits_t *clock, struct timeval *new_time) {
         tmp->tm_hour %= 12;
     }
 
-    if (!__digit_update(offset, 2, tmp->tm_hour % 10))
-        return 2;
+    if (!__digit_update(offset, 2, tmp->tm_hour % 10)) {
+        rtn = 2;
+        goto end;
+    }
+
     transpos(offset, -(CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH), 0);
-    if (!__digit_update(offset, 3, tmp->tm_hour / 10))
-        return 3;
+    if (!__digit_update(offset, 3, tmp->tm_hour / 10)) {
+        rtn = 3;
+        goto end;
+    }
 
-    clock->tval = new_time;
+    digits->tval = new_time;
+    rtn = 4;
 
+end:
     hidecursor();
+    fflush(stdout);
 
-    return 4;
+    draw_unlock();
+
+    return rtn;
 }
 
-void digits_setpos(int x, int y) {
+void
+digits_setpos(int x, int y) {
     setpos(digits_offset, x, y);
 }
 
 /* 从右到左绘制数字和分隔符（冒号） */
 void
-digits_redraw(digits_t *clock, struct timeval *new_time) {
+digits_redraw(digits_t *digits, struct timeval *new_time) {
     offset_t offset = digits_offset;
 
     memset(&clock_digit, -1, sizeof(clock_digit));
-    digits_update(clock, new_time);
+    digits_update(digits, new_time);
 
     transpos(offset, 2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH) - 2, 0);
     draw_digit(offset, -1);
 
-    hidecursor();
+    fflush(stdout);
 }
