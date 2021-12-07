@@ -56,13 +56,6 @@ strmatch(char *str, const char *pattern, size_t size) {
         sscanf(str + sizeof(pattern) - 1, fmt, &prop);                         \
     }
 
-/* 简单封装读取当前流量的操作，以后会弃用 */
-inline void
-flow_record(flow_t *flow, unsigned long down_flow) {
-    flow->download = down_flow;
-    gettimeofday(&flow->tval, 0);
-}
-
 /**
  * 读书人的事怎么能说是爬虫呢.
  * Returns 0 if succeed, -1 if not.
@@ -81,13 +74,18 @@ info_fetch(info_t *info) {
 
     char *str, *p = strpos(http.buff, "<script");
     if (p == 0) {
-        debug("failed to get variables: %s\n", http.buff);
+        debug("%s: Failed to get variables: %s\n", __FUNCTION__, http.buff);
         return -1;
     }
 
     /* flow */
     strscan(str, "flow='", "%lu", flow);
-    flow_record(&info->flow_arr[info->curr_flow], flow);
+    {
+        flow_t *cur_flow = &info->flow_arr[info->curr_flow];
+        cur_flow->download = flow;
+        gettimeofday(&cur_flow->tval, 0);
+    }
+
     if (++info->curr_flow >= FLOW_NUM) {
         info->curr_flow -= FLOW_NUM;
     }
@@ -101,7 +99,8 @@ info_fetch(info_t *info) {
     return 0;
 }
 
-void info_setpos(int x, int y) {
+void
+info_setpos(int x, int y) {
     setpos(info_offset, x, y);
 }
 
