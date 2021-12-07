@@ -154,7 +154,6 @@ tui_redraw(int num) {
     hidecursor();
     clear();
 
-    // TODO check for minheight and minwidth
     int padding_y = (tui->win.ws_row - CLOCK_MIN_HEIGHT) / 2;
     digits_setpos((tui->win.ws_col - CLOCK_MIN_WIDTH) / 2, padding_y);
 

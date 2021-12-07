@@ -4,8 +4,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-inline
-const char *
+#define int8 char
+
+inline const char *
 __http_header(const char *str, const char *header) {
     char *p, *end;
     if ((p = strstr(str, header)) == NULL)
@@ -19,7 +20,6 @@ __http_header(const char *str, const char *header) {
 
 int
 http_get(http_t *http) {
-    const char *slen;
     size_t len = 0;
 
     /* 开启一个 tcp socket */
@@ -47,8 +47,7 @@ http_get(http_t *http) {
      * 1000 for "\r\n\r"
      * 0000 for "\r\n\r\n"
      */
-    // TODO 自定义类型int8
-    char flag = 0x01;
+    int8 flag = 0x01;
     for (char *s = http->buff;; s++) {
         if (tcp_read(&http->conn, s, 1) <= 0) {
             // Connection gone.
@@ -72,12 +71,16 @@ http_get(http_t *http) {
             break;
     }
 
-    slen = __http_header(http->buff, "content-length:");
-    len = atoi(slen);
+    {
+        const char *slen = __http_header(http->buff, "content-length:");
+        len = atoi(slen);
+    }
 
     tcp_read(&http->conn, http->buff, len);
 
     /* 关闭 tcp socket */
+    // TODO 回收利用tcp连接以降低开销
+    // TODO TFO优化，并提供编译选项
     tcp_close(&http->conn);
 
     return 0;
