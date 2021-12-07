@@ -143,7 +143,6 @@ tui_redraw(int num) {
     info_redraw(&tui->info);
 
     gotoxy(0, 0);
-    flush();
 
     return 0;
 }

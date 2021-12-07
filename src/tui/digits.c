@@ -77,9 +77,7 @@ digits_update(digits_t *digits, struct timeval *new_time) {
     rtn = 4;
 
 end:
-    hidecursor();
-    flush();
-
+    draw_end();
     draw_unlock();
 
     return rtn;
@@ -101,5 +99,5 @@ digits_redraw(digits_t *digits, struct timeval *new_time) {
     transpos(offset, 2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH) - 2, 0);
     draw_digit(offset, -1);
 
-    flush();
+    draw_end();
 }

@@ -3,8 +3,8 @@
 #include "calc.h"
 #include "color.h"
 #include "draw.h"
-#include <string.h>
 #include <pthread.h>
+#include <string.h>
 #include <sys/time.h>
 
 pthread_mutex_t mtx_draw;
@@ -103,11 +103,13 @@ draw_digit(offset_t offset, int digit) {
     }
 }
 
-int draw_lock_init() {
+int
+draw_lock_init() {
     return pthread_mutex_init(&mtx_draw, 0);
 }
 
-int draw_lock() {
+int
+draw_lock() {
     return pthread_mutex_lock(&mtx_draw);
 }
 
@@ -123,4 +125,15 @@ draw_timedlock() {
 int
 draw_unlock() {
     return pthread_mutex_unlock(&mtx_draw);
+}
+
+void
+draw_start() {
+
+}
+
+void draw_end()
+{
+    hidecursor();
+    flush();
 }

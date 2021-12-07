@@ -27,4 +27,7 @@ int draw_lock();
 int draw_timedlock();
 int draw_unlock();
 
+void draw_start();
+void draw_end();
+
 #endif /* DRAW_H */
