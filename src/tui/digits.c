@@ -55,7 +55,7 @@ digits_update(digits_t *digits, struct timeval *new_time) {
     }
 
     // 跳过分隔符（冒号）
-    transpos(offset, -2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH - 2), 0);
+    transpos(offset, -2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH - CLOCK_DOTS_OFFSET), 0);
 
     /* 12小时制 */
     if (tmp->tm_hour > 12) {
@@ -96,7 +96,7 @@ digits_redraw(digits_t *digits, struct timeval *new_time) {
     memset(&clock_digit, -1, sizeof(clock_digit));
     digits_update(digits, new_time);
 
-    transpos(offset, 2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH) - 2, 0);
+    transpos(offset, 2 * (CLOCK_DIGIT_WIDTH + CLOCK_SPACE_WIDTH) - CLOCK_DOTS_OFFSET, 0);
     draw_digit(offset, -1);
 
     draw_end();

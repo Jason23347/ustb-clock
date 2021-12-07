@@ -1,14 +1,15 @@
 #ifndef DIGITS_H
 #define DIGITS_H
 
-#define CLOCK_BLOCK_WIDTH (2 + 3 * CLOCK_DOT_WIDTH)
+#include <sys/time.h>
+
+#include "draw.h"
+
 #define CLOCK_DOTS_OFFSET (CLOCK_SPACE_WIDTH * 2 / 3)
 
-/* Space between dots and digits is thinner, so minus 2 * offset */
-#define CLOCK_MIN_WIDTH                                                        \
-    (5 * CLOCK_BLOCK_WIDTH + 4 * CLOCK_SPACE_WIDTH - 2 * CLOCK_DOTS_OFFSET)
-
 #if (CLOCK_CONDENSE == 0)
+
+#define CLOCK_DIGIT_WIDTH (3 * CLOCK_DOT_WIDTH + 2) // 三个点之间的俩空格
 
 /* 10 (clock) + 2 (date) + 4 (flow info) */
 #define CLOCK_DIGIT_HEIGHT 10
@@ -16,21 +17,17 @@
 
 #else /* CLOCK_CONDENSE */
 
+#define CLOCK_DIGIT_WIDTH  (3 * CLOCK_DOT_WIDTH)
+
 /*  6 (clock) + 2 (date) + 4 (flow info) */
 #define CLOCK_DIGIT_HEIGHT 6
 #define CLOCK_MIN_HEIGHT   12
 
 #endif /* CLOCK_CONDENSE */
 
-#include "draw.h"
-
-#include <sys/time.h>
-
-#if (CLOCK_CONDENSE == 0)
-#define CLOCK_DIGIT_WIDTH (3 * CLOCK_DOT_WIDTH + 2) // 三个点之间的俩空格
-#else
-#define CLOCK_DIGIT_WIDTH (3 * CLOCK_DOT_WIDTH)
-#endif
+/* Space between dots and digits is thinner, so minus 2 * offset */
+#define CLOCK_MIN_WIDTH                                                        \
+    (5 * CLOCK_DIGIT_WIDTH + 4 * CLOCK_SPACE_WIDTH - 2 * CLOCK_DOTS_OFFSET)
 
 typedef struct {
     time_t current;
