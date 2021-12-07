@@ -1,6 +1,5 @@
 #include "calc.h"
 
-#include "color.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -10,6 +9,7 @@
 /* 绝对值 */
 #define abs(n) ((n > 0) ? n : -n)
 
+#ifdef COLORFUL_OUTPUT
 /* 根据 fee 设置颜色 */
 inline int
 __color_fee(unsigned fee) {
@@ -21,6 +21,7 @@ __color_fee(unsigned fee) {
         return RED;
     }
 }
+#endif /* COLORFUL_OUTPUT */
 
 /* 手动添加小数点，保留两位小数 */
 const char *
@@ -49,11 +50,20 @@ __calc_decimal(char *str, size_t maxlen, long number, size_t n) {
     return str;
 }
 
+#ifdef COLORFUL_OUTPUT
+inline void
+__calc_set_color(calc_t *calc, int color) {
+    calc->color = color;
+}
+#else
+#define __calc_set_color(...)
+#endif /* COLORFUL_OUTPUT */
+
 /* 计算余额 */
 calc_t *
 calc_fee(calc_t *calc, unsigned fee) {
     __calc_decimal(calc->str, sizeof(calc->str), fee, 4);
-    calc->color = __color_fee(fee);
+    __calc_set_color(calc, __color_fee(fee));
 
     return calc;
 }
@@ -63,7 +73,7 @@ calc_t *
 calc_flow(calc_t *calc, unsigned long flow) {
     if (flow < 1000) {
         snprintf(calc->str, sizeof(calc->str), "%lu KB", flow);
-        calc->color = NORMAL;
+        __calc_set_color(calc, NORMAL);
         return calc;
     }
 
@@ -74,11 +84,11 @@ calc_flow(calc_t *calc, unsigned long flow) {
         __calc_decimal(calc->str, sizeof(calc->str), round((float)flow / 1024),
                        2);
         strncat(calc->str, " MB", sizeof(calc->str));
-        calc->color = NORMAL;
+        __calc_set_color(calc, NORMAL);
     } else {
         __calc_decimal(calc->str, sizeof(calc->str), gbflow, 2);
         strncat(calc->str, " GB", sizeof(calc->str));
-        calc->color = NORMAL;
+        __calc_set_color(calc, NORMAL);
     }
 
     return calc;
@@ -97,6 +107,7 @@ calc_speed(calc_t *calc, unsigned long flow) {
                  (float)flow / 1024);
     }
 
+#ifdef COLORFUL_OUTPUT
     if (flow <= 1024) {
         calc->color = NORMAL;
     } else if (flow <= 1024 * 6) {
@@ -104,6 +115,7 @@ calc_speed(calc_t *calc, unsigned long flow) {
     } else {
         calc->color = RED;
     }
+#endif /* COLORFUL_OUTPUT */
 
     return calc;
 }
@@ -113,10 +125,10 @@ calc_t *
 calc_ipv6(calc_t *calc, int mode) {
     if (mode == 4 || mode == 12) {
         strncpy(calc->str, "ON", sizeof(calc->str));
-        calc->color = GREEN;
+        __calc_set_color(calc, GREEN);
     } else {
         strncpy(calc->str, "OFF", sizeof(calc->str));
-        calc->color = YELLOW;
+        __calc_set_color(calc, YELLOW);
     }
 
     return calc;

@@ -4,7 +4,9 @@
 #include "conf.h"
 
 typedef struct {
+#ifdef COLORFUL_OUTPUT
     int color;
+#endif /* COLORFUL_OUTPUT */
     char str[CLOCK_INFO_WIDTH];
 } calc_t;
 

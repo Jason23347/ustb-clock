@@ -22,6 +22,13 @@ AS_IF([ test "x$enable_detect_winsize" = xyes ], [
     AC_DEFINE([ALWAYS_DETECT_WINSIZE], [1], [always detect winsize and redraw])
 ])
 
+# colorfulization
+AC_ARG_ENABLE(detect_winsize,
+    AS_HELP_STRING([--disable-colorful-output], [print info colorfully, default: yes]))
+AS_IF([ test "x$enable_detect_winsize" = xyes ], [
+    AC_DEFINE([COLORFUL_OUTPUT], [1], [print info colorfully])
+])
+
 # Checks for programs.
 AC_PROG_CC
 AC_PROG_CC_C99

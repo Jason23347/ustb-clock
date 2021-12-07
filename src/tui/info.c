@@ -1,7 +1,6 @@
 #include "info.h"
 
 #include "calc.h"
-#include "color.h"
 #include "conf.h"
 #include "draw.h"
 #include "net/http.h"

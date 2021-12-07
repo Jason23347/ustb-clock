@@ -22,7 +22,9 @@ draw_line(offset_t offset, const char *prompt, const calc_t *value,
     gotopos(offset);
     printf("%s", prompt);
     __draw_space(length - strlen(prompt) - strlen(value->str));
+#ifdef COLORFUL_OUTPUT
     set_color(value->color);
+#endif /* COLORFUL_OUTPUT */
     printf("%s", value->str);
     reset_color();
 }
