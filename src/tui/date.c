@@ -4,6 +4,7 @@
 #include <string.h>
 
 #include "date.h"
+#include "draw.h"
 
 offset_t date_offset;
 

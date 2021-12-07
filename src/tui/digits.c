@@ -1,9 +1,10 @@
 #include "conf.h"
 
-#include "digits.h"
-
 #include <string.h>
 #include <time.h>
+
+#include "draw.h"
+#include "digits.h"
 
 offset_t digits_offset;
 

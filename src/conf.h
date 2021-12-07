@@ -2,7 +2,7 @@
 #define CONF_H
 
 #include "config.h"
-#include "tui/color.h"
+#include "color.h"
 
 #ifndef NDEBUG
 #define debug(...)                                                             \

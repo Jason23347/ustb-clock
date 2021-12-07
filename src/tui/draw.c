@@ -1,7 +1,6 @@
 #include "conf.h"
 
 #include "calc.h"
-#include "color.h"
 #include "draw.h"
 #include <pthread.h>
 #include <string.h>

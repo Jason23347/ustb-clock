@@ -3,8 +3,6 @@
 
 #include <sys/time.h>
 
-#include "draw.h"
-
 #define CLOCK_DOTS_OFFSET (CLOCK_SPACE_WIDTH * 2 / 3)
 
 #if (CLOCK_CONDENSE == 0)

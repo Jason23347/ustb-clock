@@ -9,6 +9,8 @@
 #include <string.h>
 #include <unistd.h>
 
+#include "draw.h"
+
 #include "date.h"
 #include "digits.h"
 #include "info.h"

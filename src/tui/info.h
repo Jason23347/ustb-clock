@@ -1,7 +1,6 @@
 #ifndef INFO_H
 #define INFO_H
 
-#include "draw.h"
 #include "flow.h"
 
 typedef struct {
