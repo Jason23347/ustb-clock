@@ -2,6 +2,13 @@
 #define CALC_H
 
 #include "conf.h"
+#include <bits/types.h>
+
+#if __WORDSIZE == 64
+#define uint64_specifier "%lu"
+#else
+#define uint64_specifier "%llu"
+#endif
 
 typedef struct {
 #ifdef COLORFUL_OUTPUT
@@ -10,8 +17,8 @@ typedef struct {
     char str[CLOCK_INFO_WIDTH];
 } calc_t;
 
-calc_t *calc_flow(calc_t *calc, unsigned long flow);
-calc_t *calc_speed(calc_t *calc, unsigned long flow);
+calc_t *calc_flow(calc_t *calc, __uint64_t flow);
+calc_t *calc_speed(calc_t *calc, __uint64_t flow);
 calc_t *calc_fee(calc_t *calc, unsigned fee);
 calc_t *calc_ipv6(calc_t *calc, int mode);
 

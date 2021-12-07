@@ -1,13 +1,13 @@
 #include "flow.h"
 
-#define round(n) (int)(n + 0.5)
+#define round(n) (__int64_t)(n + 0.5)
 
 /**
  * Calculate weight for time interval,
  * assumed to be never lesser than 0.
  */
 inline unsigned
-__flow_wight(unsigned long millisec) {
+__flow_wight(__uint64_t millisec) {
     if (millisec == 0)
         return 100;
     else if (millisec < 6000000) {
@@ -17,12 +17,12 @@ __flow_wight(unsigned long millisec) {
     }
 }
 
-unsigned long
+__uint64_t
 flow_speed(flow_t arr[FLOW_NUM], int current_flow) {
     flow_t *cur, *flow, *last;
     struct timeval *tv;
-    unsigned long millisec;
-    unsigned long weight = 0;
+    __uint64_t millisec;
+    __uint64_t weight = 0;
     double res = 0;
 
     /* 分支即优化 */
@@ -53,8 +53,8 @@ flow_speed(flow_t arr[FLOW_NUM], int current_flow) {
     }
 
     /* FIXME 谜之bug，出现奇大无比的负值 */
-    if (cur->speed < 0)
-        cur->speed = 0;
-
-    return round(cur->speed * 1000000.0);
+    {
+        __int64_t tmp = round(cur->speed * 1000000.0);
+        return tmp > 0 ? tmp : 0; /* 不要复数谢谢 */
+    }
 }

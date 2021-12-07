@@ -61,7 +61,7 @@ strmatch(char *str, const char *pattern, size_t size) {
  */
 int
 info_fetch(info_t *info) {
-    unsigned long flow;
+    __uint64_t flow;
     http_t http = {
         .ip = LOGIN_HOST,
         .port = PORT,
@@ -78,7 +78,7 @@ info_fetch(info_t *info) {
     }
 
     /* flow */
-    strscan(str, "flow='", "%lu", flow);
+    strscan(str, "flow='", uint64_specifier, flow);
     {
         flow_t *cur_flow = &info->flow_arr[info->curr_flow];
         cur_flow->download = flow;

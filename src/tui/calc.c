@@ -4,7 +4,7 @@
 #include <string.h>
 
 /* 取整 */
-#define round(n) (long)(n + 0.5)
+#define round(n) (__uint64_t)(n + 0.5)
 
 /* 绝对值 */
 #define abs(n) ((n > 0) ? n : -n)
@@ -25,7 +25,7 @@ __color_fee(unsigned fee) {
 
 /* 手动添加小数点，保留两位小数 */
 const char *
-__calc_decimal(char *str, size_t maxlen, long number, size_t n) {
+__calc_decimal(char *str, size_t maxlen, __int64_t number, size_t n) {
     char *s;
     size_t len;
 
@@ -39,7 +39,14 @@ __calc_decimal(char *str, size_t maxlen, long number, size_t n) {
     }
 
     // 处理小数点
-    snprintf(s, maxlen, "%03ld", number);
+    snprintf(s, maxlen,
+#if __WORDSIZE == 64
+             "%03ld",
+#else
+             "%03lld",
+#endif
+             number);
+
     len = strlen(s);
     // 小数点后两位向右平移
     s += len - n;
@@ -70,16 +77,17 @@ calc_fee(calc_t *calc, unsigned fee) {
 
 /* 计算流量 */
 calc_t *
-calc_flow(calc_t *calc, unsigned long flow) {
+calc_flow(calc_t *calc, __uint64_t flow) {
     if (flow < 1000) {
-        snprintf(calc->str, sizeof(calc->str), "%lu KB", flow);
+        snprintf(calc->str, sizeof(calc->str), uint64_specifier " KB", flow);
+
         __calc_set_color(calc, NORMAL);
         return calc;
     }
 
     /* gbflow = 100 代表 1G */
     /* 前 50G 免费，所以显示剩余免费额度或已付费流量 */
-    long gbflow = round((float)flow * 100 / 1048576) - 5000;
+    __uint64_t gbflow = round((float)flow * 100 / 1048576) - 5000;
     if (abs(flow) < 100) {
         __calc_decimal(calc->str, sizeof(calc->str), round((float)flow / 1024),
                        2);
@@ -96,13 +104,10 @@ calc_flow(calc_t *calc, unsigned long flow) {
 
 /* 计算流量下载速度 */
 calc_t *
-calc_speed(calc_t *calc, unsigned long flow) {
+calc_speed(calc_t *calc, __uint64_t flow) {
     if (flow < 1000) {
-        snprintf(calc->str, sizeof(calc->str), "%lu KB/s", flow);
+        snprintf(calc->str, sizeof(calc->str), uint64_specifier " KB/s", flow);
     } else {
-        /* FIXME 偶尔出现的超大数字，暂时用上界屏蔽了 */
-        if (flow > 204800) /* 200 MB/s */
-            flow = 0;
         snprintf(calc->str, sizeof(calc->str), "%.2lf MB/s",
                  (float)flow / 1024);
     }

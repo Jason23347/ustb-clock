@@ -1,6 +1,8 @@
 #ifndef DRAW_H
 #define DRAW_H
 
+#include <stdio.h>
+
 #include "calc.h"
 #include "offset.h"
 

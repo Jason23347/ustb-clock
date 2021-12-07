@@ -23,9 +23,9 @@ AS_IF([ test "x$enable_detect_winsize" = xyes ], [
 ])
 
 # colorfulization
-AC_ARG_ENABLE(detect_winsize,
-    AS_HELP_STRING([--disable-colorful-output], [print info colorfully, default: yes]))
-AS_IF([ test "x$enable_detect_winsize" = xyes ], [
+AC_ARG_ENABLE(colorful_output,
+    AS_HELP_STRING([--enable-colorful-output], [print info colorfully, default: yes]))
+AS_IF([ test "x$enable_colorful_output" != xno ], [
     AC_DEFINE([COLORFUL_OUTPUT], [1], [print info colorfully])
 ])
 

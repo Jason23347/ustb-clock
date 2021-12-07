@@ -1,10 +1,10 @@
+#include "conf.h"
+
 #include "http.h"
 #include "tcp.h"
 
 #include <stdlib.h>
 #include <string.h>
-
-#define int8 char
 
 inline const char *
 __http_header(const char *str, const char *header) {
@@ -47,7 +47,7 @@ http_get(http_t *http) {
      * 1000 for "\r\n\r"
      * 0000 for "\r\n\r\n"
      */
-    int8 flag = 0x01;
+    __int8_t flag = 0x01;
     for (char *s = http->buff;; s++) {
         if (tcp_read(&http->conn, s, 1) <= 0) {
             // Connection gone.

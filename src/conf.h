@@ -2,8 +2,6 @@
 #define CONF_H
 
 #include "config.h"
-#include "stdio.h"
-
 #include "tui/color.h"
 
 #ifndef NDEBUG
