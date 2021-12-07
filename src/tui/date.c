@@ -25,7 +25,7 @@ date_redraw(const char *date_str) {
 
     gotopos(date_offset);
     printf("%s", date_str);
-    fflush(stdout);
+    flush();
 
     draw_unlock();
 }

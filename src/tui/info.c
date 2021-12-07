@@ -142,7 +142,7 @@ info_redraw(info_t *info) {
     hidecursor();
     gotoxy(0, 0);
 
-    fflush(stdout);
+    flush();
 
     draw_unlock();
 }

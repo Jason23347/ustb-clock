@@ -65,7 +65,7 @@ handle_abort(int signal) {
 
     gotoxy(0, 0);
     printf("Bye-bye.\n");
-    fflush(stdout);
+    flush();
 }
 
 void *
@@ -143,7 +143,7 @@ tui_redraw(int num) {
     info_redraw(&tui->info);
 
     gotoxy(0, 0);
-    fflush(stdout);
+    flush();
 
     return 0;
 }
