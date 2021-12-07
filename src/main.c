@@ -8,19 +8,56 @@
 
 void
 print_info() {
-    printf("%s\n\n"
-           "Copy 2021 Jason <jason23347@gmail.com>\n",
-           PACKAGE_STRING);
+    printf("%s\n"
+#ifndef NDEBUG
+           "+debug "
+#else
+           "-debug "
+#endif /* NDEBUG */
+#ifdef ALWAYS_DETECT_WINSIZE
+           "+winsize "
+#else
+           "-winsize "
+#endif /* ALWAYS_DETECT_WINSIZE */
+           "\n\n"
+           "Copy 2021 Jason <jason23347@gmail.com>\n\n"
+           "Login host:\t%s\n"
+           "Login port:\t%d\n"
+           "Clock color:\t" color(CLOCK_COLOR) "  " color(BG_NORMAL) " %s\n"
+           "Dot width:\t%d\n"
+           "Space width:\t%d\n"
+           "Condense mode:\t%s\n"
+           "Info refresh interval: %d second(s)\n\n",
+           PACKAGE_STRING,
+           LOGIN_HOST,
+           PORT,
+           colorname(CLOCK_COLOR),
+           CLOCK_DOT_WIDTH,
+           CLOCK_SPACE_WIDTH,
+           CLOCK_CONDENSE ?
+                color(GREEN) "TRUE" color(NORMAL) :
+                color(RED) "FALSE" color(NORMAL),
+           INFO_REFRESH_INTERVAL
+    );
 }
 
 int
-main(int argc, const char *argv[]) {
+main(int argc, char *const *argv) {
+    int c;
+
+    while ((c = getopt(argc, argv, "h")) != -1) {
+        switch (c) {
+        case 'h':
+            print_info();
+            return 0;
+        default:
+            fprintf(stderr, "Unknown option: %c\n", c);
+            return -1;
+        }
+    }
+
     /* disable stderr */
     fclose(stderr);
-
-    /* print copy info */
-    print_info();
-    sleep(1);
 
     tui_init();
 

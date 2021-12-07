@@ -29,4 +29,6 @@
 #define set_color(c)  printf(color(%d), c)
 #define reset_color() printf(color(NORMAL;NORMAL))
 
+const char *colorname(int color);
+
 #endif /* COLOR_H */
