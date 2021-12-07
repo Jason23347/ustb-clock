@@ -26,7 +26,11 @@ watcher_t watcher;
 void
 tui_restart(int sig) {
     if (sig == SIGALRM) {
-        ioctl(STDIN_FILENO, TIOCGWINSZ, &tui_struct.win);
+        tui_getwinsize(&tui_struct);
+        if (tui_detect_size(&tui_struct)) {
+            // abort
+            return;
+        }
 
         tui_redraw(0);
 
@@ -76,6 +80,31 @@ date_update(int num) {
 }
 
 int
+tui_getwinsize(tui_t *tui) {
+    return ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->win);
+}
+
+/**
+ * @brief Detect if size is enough to show clock
+ *
+ * @return int !0 on error
+ */
+int
+tui_detect_size(const tui_t *tui) {
+    if (tui->win.ws_col < CLOCK_MIN_WIDTH) {
+        debug("%s: No enough window width!", __FUNCTION__);
+        return -1;
+    }
+
+    if (tui->win.ws_row < CLOCK_MIN_HEIGHT) {
+        debug("%s: No enough window height!", __FUNCTION__);
+        return -1;
+    }
+
+    return 0;
+}
+
+int
 tui_init() {
     tui_t *tui = &tui_struct;
     task_t task;
@@ -86,7 +115,7 @@ tui_init() {
 #endif
     signal(SIGINT, handle_abort);
 
-    ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->win);
+    tui_getwinsize(tui);
 
     digits_init(&tui->clock);
     info_init(&tui->info);

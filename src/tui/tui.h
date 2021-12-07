@@ -13,6 +13,8 @@ typedef struct {
     struct winsize win;
 } tui_t;
 
+int tui_detect_size(const tui_t *tui);
+int tui_getwinsize(tui_t *tui);
 int tui_init();
 void *tui_redraw(int num);
 
