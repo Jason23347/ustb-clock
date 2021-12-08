@@ -3,8 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 
-/* 取整 */
-#define round(n) (__uint64_t)(n + 0.5)
+#include "flow.h"
 
 /* 绝对值 */
 #define abs(n) ((n > 0) ? n : -n)
@@ -13,9 +12,9 @@
 /* 根据 fee 设置颜色 */
 inline int
 __color_fee(unsigned fee) {
-    if (fee >= 200000) {
+    if (fee >= 20 * YUAN) {
         return GREEN;
-    } else if (fee >= 100000) {
+    } else if (fee >= 10 * YUAN) {
         return YELLOW;
     } else {
         return RED;
@@ -87,10 +86,10 @@ calc_flow(calc_t *calc, __uint64_t flow) {
 
     /* gbflow = 100 代表 1G */
     /* 前 50G 免费，所以显示剩余免费额度或已付费流量 */
-    __uint64_t gbflow = round((float)flow * 100 / 1048576) - 5000;
+    __uint64_t gbflow = round(__uint64_t, (float)flow * 100 / MB) - 5000;
     if (abs(flow) < 100) {
-        __calc_decimal(calc->str, sizeof(calc->str), round((float)flow / 1024),
-                       2);
+        __calc_decimal(calc->str, sizeof(calc->str),
+                       round(__int64_t, (float)flow / KB), 2);
         strncat(calc->str, " MB", sizeof(calc->str));
         __calc_set_color(calc, NORMAL);
     } else {
@@ -108,14 +107,13 @@ calc_speed(calc_t *calc, __uint64_t flow) {
     if (flow < 1000) {
         snprintf(calc->str, sizeof(calc->str), uint64_specifier " KB/s", flow);
     } else {
-        snprintf(calc->str, sizeof(calc->str), "%.2lf MB/s",
-                 (float)flow / 1024);
+        snprintf(calc->str, sizeof(calc->str), "%.2lf MB/s", (float)flow / KB);
     }
 
 #ifdef COLORFUL_OUTPUT
-    if (flow <= 1024) {
+    if (flow <= 1 * KB) {
         calc->color = NORMAL;
-    } else if (flow <= 1024 * 6) {
+    } else if (flow <= 6 * KB) {
         calc->color = YELLOW;
     } else {
         calc->color = RED;

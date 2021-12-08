@@ -10,6 +10,8 @@
 #define uint64_specifier "%llu"
 #endif
 
+#define YUAN 1000
+
 typedef struct {
 #ifdef COLORFUL_OUTPUT
     int color;

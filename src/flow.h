@@ -5,6 +5,11 @@
 
 #define FLOW_NUM 8
 
+#define round(_type, _num) (_type)((_num) + 0.5)
+
+#define KB 1024
+#define MB (KB * KB)
+
 typedef struct {
     struct timeval tval;
     __uint64_t download;
