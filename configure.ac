@@ -17,17 +17,32 @@ AS_IF([! test "x$enable_debug" = xyes ], [
 
 # detect window size
 AC_ARG_ENABLE(detect_winsize,
-    AS_HELP_STRING([--enable-winsize-detection], [detect winsize, default: no]))
+    AS_HELP_STRING([--enable-winsize-detection],
+    [detect winsize, default: no]))
 AS_IF([ test "x$enable_detect_winsize" = xyes ], [
     AC_DEFINE([ALWAYS_DETECT_WINSIZE], [1], [always detect winsize and redraw])
 ])
 
 # colorfulization
 AC_ARG_ENABLE(colorful_output,
-    AS_HELP_STRING([--enable-colorful-output], [print info colorfully, default: yes]))
+    AS_HELP_STRING([--enable-colorful-output],
+    [print info colorfully, default: yes]))
 AS_IF([ test "x$enable_colorful_output" != xno ], [
     AC_DEFINE([COLORFUL_OUTPUT], [1], [print info colorfully])
 ])
+
+# Clock type: "digits" or "randmap"
+AC_ARG_ENABLE(clock_type,
+    AC_HELP_STRING([--enable-clock-type],
+    [specify clock type, default: digits]))
+AS_CASE(["$enable_clock_type"],
+  [randmap], [
+    AC_DEFINE([CLOCK_TYPE], [CLOCK_TYPE_RANDMAP], [clock type])
+  ]
+  [*], [
+    AC_DEFINE([CLOCK_TYPE], [CLOCK_TYPE_DIGITS], [clock type])
+  ]
+)
 
 # Checks for programs.
 AC_PROG_CC
