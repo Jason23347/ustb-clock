@@ -10,11 +10,6 @@
 #include <unistd.h>
 
 #include "draw.h"
-
-#include "date.h"
-#include "digits.h"
-#include "info.h"
-
 #include "sched/watcher.h"
 
 tui_t tui_struct;
