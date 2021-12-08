@@ -1,4 +1,5 @@
 #include "conf.h"
+#if CLOCK_TYPE == CLOCK_TYPE_DIGITS
 
 #include <string.h>
 #include <time.h>
@@ -74,6 +75,7 @@ digits_update(digits_t *digits, struct timeval *new_time) {
         goto end;
     }
 
+    // FIXME 存起来了但是没用上，删了得了
     digits->tval = new_time;
     rtn = 4;
 
@@ -102,3 +104,5 @@ digits_redraw(digits_t *digits, struct timeval *new_time) {
 
     draw_end();
 }
+
+#endif /* CLOCK_TYPE */
