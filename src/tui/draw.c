@@ -42,11 +42,12 @@ draw_line(offset_t offset, const char *prompt, const calc_t *value,
 
 #define DOT color(CLOCK_COLOR) EMP color(BG_NORMAL)
 
+#if CLOCK_TYPE == CLOCK_TYPE_DIGITS
 #if (CLOCK_CONDENSE == 0)
 #define POINT (digit & 0x4000) ? (DOT " ") : (EMP " ")
 #else
 #define POINT (digit & 0x4000) ? DOT : EMP
-#endif
+#endif /* CLOCK_CONDENSE */
 
 inline void
 __draw_digit(offset_t offset, int digit) {
@@ -103,6 +104,13 @@ draw_digit(offset_t offset, int digit) {
         __draw_digit(offset, 0x0410);
     }
 }
+#endif /* CLOCK_TYPE_DIGITS */
+
+void
+draw_dot(offset_t offset) {
+    gotopos(offset);
+    printf(DOT);
+}
 
 int
 draw_lock_init() {
@@ -129,12 +137,11 @@ draw_unlock() {
 }
 
 void
-draw_start() {
+draw_start() {}
 
-}
-
-void draw_end()
-{
+void
+draw_end() {
     hidecursor();
-    flush();
+    if (flush())
+        flush();
 }

@@ -22,7 +22,11 @@
 
 void draw_line(offset_t offset, const char *prompt, const calc_t *value,
                int length);
+#if CLOCK_TYPE == CLOCK_TYPE_DIGITS
 void draw_digit(offset_t offset, int digit);
+#elif CLOCK_TYPE == CLOCK_TYPE_RANDMAP
+void draw_dot(offset_t offset);
+#endif /* CLOCK_TYPE */
 
 int draw_lock_init();
 int draw_lock();
