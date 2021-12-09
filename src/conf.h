@@ -12,9 +12,18 @@
         printf(__VA_ARGS__);                                                   \
         loadcursor();                                                          \
     }
+
+#if __GNUC__ > 3
+#define likely(x)   __builtin_expect(!!(x), 1)
+#define unlikely(x) __builtin_expect(!!(x), 0)
+#endif /* __GNUC__ */
+
 #else
+
 #define debug(...)
-#endif
+#define likely(x)   (x)
+#define unlikely(x) (x)
+#endif /* NDEBUG */
 
 #define LOGIN_HOST "202.204.48.82"
 #define PORT       80
