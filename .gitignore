@@ -11,12 +11,14 @@ configure
 stamp-h1
 src/.*
 src/*/.*
+src/*/*/.*
 *.0
 *~
 *.gch
 src/*.o
 src/*.o
 src/*/*.o
+src/*/*/*.o
 ustb-clock
 compile
 depcomp
