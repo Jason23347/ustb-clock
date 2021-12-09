@@ -17,6 +17,7 @@ ustb_clock_SOURCES = \
     src/tui/draw.c \
     src/tui/info.c \
     src/tui/randmap.c \
+    src/tui/randmap/digitdot.c \
     src/tui/tui.c
 
 AM_CFLAGS = $(PTHREAD_CFLAGS) \
