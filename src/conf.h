@@ -38,10 +38,17 @@
 
 #define INFO_REFRESH_INTERVAL 1
 
+#define CLOCK_TYPE_DIGITS  0 /* default */
+#define CLOCK_TYPE_RANDMAP 1
 #ifndef CLOCK_TYPE
 #define CLOCK_TYPE CLOCK_TYPE_DIGITS
 #endif
-#define CLOCK_TYPE_DIGITS  0 /* default */
-#define CLOCK_TYPE_RANDMAP 1
+
+#if (CLOCK_TYPE == CLOCK_TYPE_RANDMAP) && CLOCK_CONDENSE
+#undef CLOCK_CONDENSE
+#define CLOCK_CONDENSE 0
+#endif
+
+// TODO 简易封装int8_t这种类型
 
 #endif /* CONF_H */
