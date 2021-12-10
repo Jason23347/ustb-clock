@@ -12,18 +12,19 @@
 #define savecursor() printf("\033[s")
 #define loadcursor() printf("\033[u")
 
-#define gotoxy(x, y) printf("\033[%d;%dH", (int)(y), (int)(x))
-#define goup(y)      printf("\033[%dA", (int)(y))
-#define godown(y)    printf("\033[%dB", (int)(y))
-#define goright(x)   printf("\033[%dC", (int)(x))
-#define goleft(x)    printf("\033[%dD", (int)(x))
-#define clear()      printf("\033c")
-#define flush()      fflush(stdout)
+#define gotoxy(x, y)                                                           \
+    printf("\033[" ssize_spec ";" ssize_spec "H", (ssize_t)(y), (ssize_t)(x))
+#define goup(y)    printf("\033[" ssize_spec "A", (ssize_t)(y))
+#define godown(y)  printf("\033[" ssize_spec "B", (ssize_t)(y))
+#define goright(x) printf("\033[" ssize_spec "C", (ssize_t)(x))
+#define goleft(x)  printf("\033[" ssize_spec "D", (ssize_t)(x))
+#define clear()    printf("\033c")
+#define flush()    fflush(stdout)
 
 void draw_line(offset_t offset, const char *prompt, const calc_t *value,
-               int length);
+               size_t length);
 #if CLOCK_TYPE == CLOCK_TYPE_DIGITS
-void draw_digit(offset_t offset, int digit);
+void draw_digit(offset_t offset, size_t digit);
 #elif CLOCK_TYPE == CLOCK_TYPE_RANDMAP
 void draw_dot(offset_t offset);
 #endif /* CLOCK_TYPE */

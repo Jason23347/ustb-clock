@@ -9,17 +9,17 @@
 
 offset_t digits_offset;
 
+// TODO 放到结构体里
 int clock_digit[4] = {-1, -1, -1, -1};
 
 int
 digits_init(digits_t *digits) {
-    digits->tval = &digits->tval_arr[0];
     return 0;
 }
 
 /* Retruns 0 if not updated, 1 if updated. */
 int
-__digit_update(offset_t offset, int pos, int num) {
+__digit_update(offset_t offset, size_t pos, int num) {
     if (clock_digit[pos] == num)
         return 0;
     clock_digit[pos] = num;
@@ -34,7 +34,7 @@ __digit_update(offset_t offset, int pos, int num) {
  * @return 更新的数字位数
  */
 int
-digits_update(digits_t *digits, struct timeval *new_time) {
+digits_update(digits_t *digits, const struct timeval *new_time) {
     int rtn = -1;
     offset_t offset = digits_offset;
     struct tm *tmp = localtime(&new_time->tv_sec);
@@ -75,8 +75,6 @@ digits_update(digits_t *digits, struct timeval *new_time) {
         goto end;
     }
 
-    // FIXME 存起来了但是没用上，删了得了
-    digits->tval = new_time;
     rtn = 4;
 
 end:
@@ -93,7 +91,7 @@ digits_setpos(int x, int y) {
 
 /* 从右到左绘制数字和分隔符（冒号） */
 void
-digits_redraw(digits_t *digits, struct timeval *new_time) {
+digits_redraw(digits_t *digits, const struct timeval *new_time) {
     offset_t offset = digits_offset;
 
     memset(&clock_digit, -1, sizeof(clock_digit));

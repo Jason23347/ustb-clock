@@ -1,3 +1,5 @@
+#include "conf.h"
+
 #include "flow.h"
 
 /**
@@ -5,7 +7,7 @@
  * assumed to be never lesser than 0.
  */
 inline unsigned
-__flow_wight(__uint64_t millisec) {
+__flow_wight(u_int64_t millisec) {
     if (millisec == 0) {
         return 100;
     } else if (millisec < 6000000) {
@@ -15,11 +17,11 @@ __flow_wight(__uint64_t millisec) {
     }
 }
 
-__uint64_t
+u_int64_t
 flow_speed(flow_t arr[FLOW_NUM], int current_flow) {
     flow_t *cur, *flow, *last;
     struct timeval *tv;
-    __uint64_t millisec;
+    u_int64_t millisec;
     unsigned weight = 0;
     double res = 0;
 
@@ -52,7 +54,7 @@ flow_speed(flow_t arr[FLOW_NUM], int current_flow) {
 
     /* FIXME 谜之bug，出现奇大无比的值 */
     {
-        __uint64_t tmp = round(__uint64_t, cur->speed * 1000000.0);
+        u_int64_t tmp = round(u_int64_t, cur->speed * 1000000.0);
         return (tmp > 0 && tmp < 100 * MB) ? tmp : 0;
     }
 }

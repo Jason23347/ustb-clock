@@ -4,12 +4,6 @@
 #include "conf.h"
 #include <bits/types.h>
 
-#if __WORDSIZE == 64
-#define uint64_specifier "%lu"
-#else
-#define uint64_specifier "%llu"
-#endif
-
 #define YUAN 1000
 
 typedef struct {
@@ -19,9 +13,9 @@ typedef struct {
     char str[CLOCK_INFO_WIDTH];
 } calc_t;
 
-calc_t *calc_flow(calc_t *calc, __uint64_t flow);
-calc_t *calc_speed(calc_t *calc, __uint64_t flow);
-calc_t *calc_fee(calc_t *calc, unsigned fee);
-calc_t *calc_ipv6(calc_t *calc, int mode);
+const calc_t *calc_flow(calc_t *calc, u_int64_t flow);
+const calc_t *calc_speed(calc_t *calc, u_int64_t flow);
+const calc_t *calc_fee(calc_t *calc, unsigned fee);
+const calc_t *calc_ipv6(calc_t *calc, int mode);
 
 #endif /* CALC_H */

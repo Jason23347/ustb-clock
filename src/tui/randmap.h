@@ -5,9 +5,9 @@
 
 #include "randmap/digitdot.h"
 
-#define CLOCK_DOT_COL      10
-#define CLOCK_DOT_ROW      24
-#define CLOCK_DIGIT_NUM    (CLOCK_DOT_COL * CLOCK_DOT_ROW)
+#define CLOCK_DOT_COL   10
+#define CLOCK_DOT_ROW   24
+#define CLOCK_DIGIT_NUM (CLOCK_DOT_COL * CLOCK_DOT_ROW)
 
 #define CLOCK_DIGIT_WIDTH  CLOCK_DOT_WIDTH
 #define CLOCK_DIGIT_HEIGHT 11
@@ -16,15 +16,15 @@
 
 typedef struct {
     struct digitdot dots[CLOCK_DIGIT_NUM];
-    struct digitdot *cur_dot;
-    struct digitdot *head;
+    const struct digitdot *cur_dot;
+    const struct digitdot *head;
     size_t act_num; /* number of activated dots */
     struct timeval tval;
 } digits_t;
 
 int digits_init(digits_t *digits);
-int digits_update(digits_t *digits, struct timeval *new_time);
-void digits_setpos(int x, int y);
-void digits_redraw(digits_t *digits, struct timeval *new_time);
+int digits_update(digits_t *digits, const struct timeval *new_time);
+void digits_setpos(size_t x, size_t y);
+void digits_redraw(digits_t *digits, const struct timeval *new_time);
 
 #endif /* RANDMAP_H */

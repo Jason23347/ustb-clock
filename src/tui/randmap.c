@@ -35,8 +35,8 @@ __digits_add_dots(digits_t *digits, int num) {
 
 int
 digits_init(digits_t *digits) {
-    struct digitdot *dot;
-    struct tm *tm_tmp;
+    const struct tm *tm_tmp;
+    const struct digitdot *dot;
 
     /* 洗白白 */
     memset(digits, 0, sizeof(digits_t));
@@ -60,7 +60,7 @@ digits_init(digits_t *digits) {
 
 /** @return 0 if not updated, 1 if updated. */
 int
-__digit_update(int pos, int num) {
+__digit_update(size_t pos, int num) {
     if (clock_digit[pos] == num)
         return 0;
     clock_digit[pos] = num;
@@ -73,7 +73,7 @@ __digit_update(int pos, int num) {
  * @return 更新的数字位数
  */
 int
-digits_update(digits_t *digits, struct timeval *new_time) {
+digits_update(digits_t *digits, const struct timeval *new_time) {
     struct tm *tmp = localtime(&new_time->tv_sec);
 
     /* 偶尔会发生的情况 */
@@ -115,16 +115,31 @@ digits_update(digits_t *digits, struct timeval *new_time) {
 }
 
 void
-digits_setpos(int x, int y) {
+digits_setpos(size_t x, size_t y) {
     setpos(digits_offset, x, y);
 }
 
 /* 从右到左绘制数字和分隔符（冒号） */
 void
-digits_redraw(digits_t *digits, struct timeval *new_time) {
+digits_redraw(digits_t *digits, const struct timeval *new_time) {
     int tmp;
     offset_t pos;
+    const struct tm *tm_tmp;
     const struct digitdot *dot;
+
+    digits->tval.tv_sec = new_time->tv_sec;
+    digits->tval.tv_usec = new_time->tv_usec;
+
+    /* 计算当前act_num */
+    gettimeofday(&digits->tval, 0);
+    tm_tmp = localtime(&digits->tval.tv_sec);
+    digits->act_num = tm_tmp->tm_hour * 10 + tm_tmp->tm_min / 6;
+
+    dot = digits->head;
+    for (size_t i = 0; i < digits->act_num; i++) {
+        dot = dot->next;
+    }
+    digits->cur_dot = dot;
 
     if (draw_timedlock()) {
         return;

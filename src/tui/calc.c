@@ -24,7 +24,7 @@ __color_fee(unsigned fee) {
 
 /* 手动添加小数点，保留两位小数 */
 const char *
-__calc_decimal(char *str, size_t maxlen, __int64_t number, size_t n) {
+__calc_decimal(char *str, size_t maxlen, int64_t number, size_t n) {
     char *s;
     size_t len;
 
@@ -66,7 +66,7 @@ __calc_set_color(calc_t *calc, int color) {
 #endif /* COLORFUL_OUTPUT */
 
 /* 计算余额 */
-calc_t *
+const calc_t *
 calc_fee(calc_t *calc, unsigned fee) {
     __calc_decimal(calc->str, sizeof(calc->str), fee, 4);
     __calc_set_color(calc, __color_fee(fee));
@@ -75,10 +75,10 @@ calc_fee(calc_t *calc, unsigned fee) {
 }
 
 /* 计算流量 */
-calc_t *
-calc_flow(calc_t *calc, __uint64_t flow) {
+const calc_t *
+calc_flow(calc_t *calc, u_int64_t flow) {
     if (flow < 1000) {
-        snprintf(calc->str, sizeof(calc->str), uint64_specifier " KB", flow);
+        snprintf(calc->str, sizeof(calc->str), u_int64_spec " KB", flow);
 
         __calc_set_color(calc, NORMAL);
         return calc;
@@ -86,10 +86,10 @@ calc_flow(calc_t *calc, __uint64_t flow) {
 
     /* gbflow = 100 代表 1G */
     /* 前 50G 免费，所以显示剩余免费额度或已付费流量 */
-    __uint64_t gbflow = round(__uint64_t, (float)flow * 100 / MB) - 5000;
+    u_int64_t gbflow = round(u_int64_t, (float)flow * 100 / MB) - 5000;
     if (abs(flow) < 100) {
         __calc_decimal(calc->str, sizeof(calc->str),
-                       round(__int64_t, (float)flow / KB), 2);
+                       round(u_int64_t, (float)flow / KB), 2);
         strncat(calc->str, " MB", sizeof(calc->str));
         __calc_set_color(calc, NORMAL);
     } else {
@@ -102,10 +102,10 @@ calc_flow(calc_t *calc, __uint64_t flow) {
 }
 
 /* 计算流量下载速度 */
-calc_t *
+const calc_t *
 calc_speed(calc_t *calc, __uint64_t flow) {
     if (flow < 1000) {
-        snprintf(calc->str, sizeof(calc->str), uint64_specifier " KB/s", flow);
+        snprintf(calc->str, sizeof(calc->str), u_int64_spec " KB/s", flow);
     } else {
         snprintf(calc->str, sizeof(calc->str), "%.2lf MB/s", (float)flow / KB);
     }
@@ -124,7 +124,7 @@ calc_speed(calc_t *calc, __uint64_t flow) {
 }
 
 /* 计算 IPV6 模式是否打开 */
-calc_t *
+const calc_t *
 calc_ipv6(calc_t *calc, int mode) {
     if (mode == 4 || mode == 12) {
         strncpy(calc->str, "ON", sizeof(calc->str));

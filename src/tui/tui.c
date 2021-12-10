@@ -158,12 +158,13 @@ tui_redraw(int num) {
     struct timeval tval;
     char date_str[CLOCK_DATE_LEN];
     tui_t *tui = &tui_struct;
+    size_t padding_y;
 
     /* Clear screen */
     hidecursor();
     clear();
 
-    int padding_y = (tui->win.ws_row - CLOCK_MIN_HEIGHT) / 2;
+    padding_y = (tui->win.ws_row - CLOCK_MIN_HEIGHT) / 2;
     digits_setpos((tui->win.ws_col - CLOCK_MIN_WIDTH) / 2, padding_y);
 
     gettimeofday(&tval, 0);

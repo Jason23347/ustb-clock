@@ -9,7 +9,7 @@
 
 typedef struct {
     int num;
-    int len;
+    size_t len;
     pthread_mutex_t mtx;
     pthread_cond_t cond;
     task_t task_list[MAX_TASK_NUM];

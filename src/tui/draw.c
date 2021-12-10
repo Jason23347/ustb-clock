@@ -2,6 +2,7 @@
 
 #include "calc.h"
 #include "draw.h"
+
 #include <pthread.h>
 #include <string.h>
 #include <sys/time.h>
@@ -9,15 +10,15 @@
 pthread_mutex_t mtx_draw;
 
 inline void
-__draw_space(int length) {
-    for (int i = 0; i < length; i++) {
+__draw_space(ssize_t length) {
+    for (size_t i = 0; i < length; i++) {
         printf(" ");
     }
 }
 
 void
 draw_line(offset_t offset, const char *prompt, const calc_t *value,
-          int length) {
+          size_t length) {
     gotopos(offset);
     printf("%s", prompt);
     __draw_space(length - strlen(prompt) - strlen(value->str));
@@ -84,7 +85,7 @@ __draw_digit(offset_t offset, int digit) {
  * 其中 1 代表实心点，0 代表空心，所有的 "1" 组成了数字 7 的形状。
  */
 void
-draw_digit(offset_t offset, int digit) {
+draw_digit(offset_t offset, size_t digit) {
     int map[10] = {
         0x7B6F, // 0
         0x2492, // 1

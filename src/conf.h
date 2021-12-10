@@ -4,6 +4,18 @@
 #include "color.h"
 #include "config.h"
 
+#include <sys/types.h>
+
+#if __WORDSIZE == 64
+#define size_spec "%lu"
+#define ssize_spec "%ld"
+#define u_int64_spec "%lu"
+#else
+#define size_spec "%u"
+#define ssize_spec "%d"
+#define u_int64_spec "%llu"
+#endif /* __WORDSIZE */
+
 #ifndef NDEBUG
 #define debug(...)                                                             \
     {                                                                          \
@@ -48,7 +60,5 @@
 #undef CLOCK_CONDENSE
 #define CLOCK_CONDENSE 0
 #endif
-
-// TODO 简易封装int8_t这种类型
 
 #endif /* CONF_H */

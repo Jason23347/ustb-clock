@@ -32,6 +32,6 @@ date_redraw(const char *date_str) {
 }
 
 void
-date_setpos(int x, int y) {
+date_setpos(size_t x, size_t y) {
     setpos(date_offset, x, y);
 }

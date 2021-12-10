@@ -23,14 +23,12 @@
 #define CLOCK_MIN_HEIGHT (CLOCK_DIGIT_HEIGHT + 6)
 
 typedef struct {
-    time_t current;
-    struct timeval *tval;
-    struct timeval tval_arr[1];
+    /* 占位 */
 } digits_t;
 
 int digits_init(digits_t *digits);
-int digits_update(digits_t *digits, struct timeval *new_time);
+int digits_update(digits_t *digits, const struct timeval *new_time);
 void digits_setpos(int x, int y);
-void digits_redraw(digits_t *digits, struct timeval *new_time);
+void digits_redraw(digits_t *digits, const struct timeval *new_time);
 
 #endif /* DIGITS_H */

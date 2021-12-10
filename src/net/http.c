@@ -47,7 +47,7 @@ http_get(http_t *http) {
      * 1000 for "\r\n\r"
      * 0000 for "\r\n\r\n"
      */
-    __int8_t flag = 0x01;
+    int8_t flag = 0x01;
     for (char *s = http->buff;; s++) {
         if (tcp_read(&http->conn, s, 1) <= 0) {
             // Connection gone.

@@ -30,9 +30,9 @@ info_init(info_t *info) {
 }
 
 /* 字符串查找，C语言么有哇 */
-char *
-strmatch(char *str, const char *pattern, size_t size) {
-    char *p = str;
+const char *
+strmatch(const char *str, const char *pattern, size_t size) {
+    const char *p = str;
     do {
         p = strchr(p + 1, pattern[0]);
         if (p == 0) {
@@ -61,7 +61,7 @@ strmatch(char *str, const char *pattern, size_t size) {
  */
 int
 info_fetch(info_t *info) {
-    __uint64_t flow;
+    u_int64_t flow;
     http_t http = {
         .ip = LOGIN_HOST,
         .port = PORT,
@@ -71,14 +71,14 @@ info_fetch(info_t *info) {
         return -1;
     }
 
-    char *str, *p = strpos(http.buff, "<script");
+    const char *str, *p = strpos(http.buff, "<script");
     if (p == 0) {
         debug("%s: Failed to get variables: %s\n", __FUNCTION__, http.buff);
         return -1;
     }
 
     /* flow */
-    strscan(str, "flow='", uint64_specifier, flow);
+    strscan(str, "flow='", u_int64_spec, flow);
     {
         flow_t *cur_flow = &info->flow_arr[info->curr_flow];
         cur_flow->download = flow;
@@ -99,7 +99,7 @@ info_fetch(info_t *info) {
 }
 
 void
-info_setpos(int x, int y) {
+info_setpos(size_t x, size_t y) {
     setpos(info_offset, x, y);
 }
 
