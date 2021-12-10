@@ -76,6 +76,12 @@ date_update(int num) {
     return 0;
 }
 
+void *
+randmap_reset(int num) {
+    digits_init(&tui_struct.clock);
+    return 0;
+}
+
 int
 tui_getwinsize(tui_t *tui) {
     return ioctl(STDIN_FILENO, TIOCGWINSZ, &tui->win);
@@ -126,6 +132,12 @@ tui_init() {
     /* Date update */
     task_init(&task, DAILY, date_update);
     watcher_register(&watcher, task);
+
+#if CLOCK_TYPE == CLOCK_TYPE_RANDMAP
+    /* Reset at 0 O'clock */
+    task_init(&task, DAILY, randmap_reset);
+    watcher_register(&watcher, task);
+#endif
 
     draw_lock_init();
     tui_redraw(0);
