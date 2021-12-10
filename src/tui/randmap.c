@@ -12,7 +12,7 @@ offset_t digits_offset;
 
 int clock_digit[4] = {-1, -1, -1, -1};
 
-void
+inline void
 __digits_add_dots(digits_t *digits, int num) {
     int i, tmp;
     offset_t pos;
@@ -27,7 +27,6 @@ __digits_add_dots(digits_t *digits, int num) {
 
         draw_dot(pos);
 
-        dot->activated = 1;
         dot = dot->next;
     }
 #undef dot
@@ -52,7 +51,6 @@ digits_init(digits_t *digits) {
 
     dot = digits->head;
     for (size_t i = 0; i < digits->act_num; i++) {
-        dot->activated = 1;
         dot = dot->next;
     }
     digits->cur_dot = dot;
@@ -126,12 +124,14 @@ void
 digits_redraw(digits_t *digits, struct timeval *new_time) {
     int tmp;
     offset_t pos;
+    const struct digitdot *dot;
 
     if (draw_timedlock()) {
         return;
     }
 
-    for (const struct digitdot *dot = digits->head; dot->activated; dot = dot->next) {
+    dot = digits->head;
+    for (size_t i = 0; i < digits->act_num; i++) {
         /* 一维数组映射到二位坐标 */
         tmp = dot - digits->dots;
         pos = digits_offset;
@@ -139,6 +139,7 @@ digits_redraw(digits_t *digits, struct timeval *new_time) {
                  tmp / CLOCK_DOT_ROW);
 
         draw_dot(pos);
+        dot = dot->next;
     }
 
     draw_end();

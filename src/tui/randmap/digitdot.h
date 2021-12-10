@@ -5,7 +5,6 @@
 #include <stddef.h>
 
 struct digitdot {
-    __uint8_t activated;
     struct digitdot *next;
 };
 
