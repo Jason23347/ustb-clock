@@ -88,7 +88,7 @@ void
 draw_digit(offset_t offset, size_t digit) {
     int map[10] = {
         0x7B6F, // 0
-        0x2492, // 1
+        0x1649, // 1
         0x73E7, // 2
         0x73CF, // 3
         0x5BC9, // 4
