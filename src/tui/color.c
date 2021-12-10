@@ -4,39 +4,39 @@ const char *
 colorname(int color) {
     switch (color) {
         /* Text colors */
-    case 30:
+    case BLACK:
+        return "BLACK";
+    case RED:
         return "RED";
-    case 31:
+    case GREEN:
         return "GREEN";
-    case 32:
+    case YELLOW:
         return "YELLOW";
-    case 33:
+    case BLUE:
         return "BLUE";
-    case 34:
+    case PURPLE:
         return "PURPLE";
-    case 35:
-        return "YELLOW";
-    case 36:
+    case DARKGREEN:
         return "DARKGREEN";
-    case 37:
+    case WHITE:
         return "WHITE";
 
         /* BG colors */
-    case 40:
+    case BG_BLACK:
         return "BG_BLACK";
-    case 41:
+    case BG_RED:
         return "BG_RED";
-    case 42:
+    case BG_GREEN:
         return "BG_GREEN";
-    case 43:
+    case BG_YELLOW:
         return "BG_YELLOW";
-    case 44:
+    case BG_BLUE:
         return "BG_BLUE";
-    case 45:
+    case BG_PURPLE:
         return "BG_PURPLE";
-    case 46:
+    case BG_DARKGREEN:
         return "BG_DARKGREEN";
-    case 47:
+    case BG_WHITE:
         return "BG_WHITE";
     default:
         return "UNKNOWN";
