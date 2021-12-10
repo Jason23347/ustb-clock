@@ -17,6 +17,7 @@
 typedef struct {
     struct digitdot dots[CLOCK_DIGIT_NUM];
     struct digitdot *cur_dot;
+    struct digitdot *head;
     size_t act_num; /* number of activated dots */
     struct timeval tval;
 } digits_t;

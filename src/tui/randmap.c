@@ -37,18 +37,20 @@ __digits_add_dots(digits_t *digits, int num) {
 int
 digits_init(digits_t *digits) {
     struct digitdot *dot;
+    struct tm *tm_tmp;
 
     /* 洗白白 */
     memset(digits, 0, sizeof(digits_t));
 
     /* 打乱顺序 */
-    digitdot_shuffle(digits->dots, CLOCK_DIGIT_NUM);
+    digits->head = digitdot_shuffle(digits->dots, CLOCK_DIGIT_NUM);
 
+    /* 计算当前act_num */
     gettimeofday(&digits->tval, 0);
-    struct tm *tm_tmp = localtime(&digits->tval.tv_sec);
+    tm_tmp = localtime(&digits->tval.tv_sec);
     digits->act_num = tm_tmp->tm_hour * 10 + tm_tmp->tm_min / 6;
 
-    dot = digits->dots;
+    dot = digits->head;
     for (size_t i = 0; i < digits->act_num; i++) {
         dot->activated = 1;
         dot = dot->next;
@@ -129,7 +131,7 @@ digits_redraw(digits_t *digits, struct timeval *new_time) {
         return;
     }
 
-    for (struct digitdot *dot = digits->dots; dot->activated; dot = dot->next) {
+    for (const struct digitdot *dot = digits->head; dot->activated; dot = dot->next) {
         /* 一维数组映射到二位坐标 */
         tmp = dot - digits->dots;
         pos = digits_offset;

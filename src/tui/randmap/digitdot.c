@@ -33,5 +33,5 @@ digitdot_shuffle(struct digitdot *arr, size_t len) {
 
     free(pos);
 
-    return arr;
+    return arr + rand() % len;
 }
