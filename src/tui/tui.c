@@ -216,6 +216,7 @@ info_schedule(void *arg) {
 
     for (;;) {
         if (info_fetch(info) == -1) {
+            info_printerr(info);
             goto next_tick;
         }
 

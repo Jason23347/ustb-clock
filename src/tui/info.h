@@ -15,5 +15,6 @@ int info_fetch(info_t *info);
 
 void info_setpos(size_t x, size_t y);
 void info_redraw(info_t *info);
+void info_printerr(info_t *info);
 
 #endif /* INFO_H */

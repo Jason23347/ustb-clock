@@ -142,3 +142,29 @@ info_redraw(info_t *info) {
     draw_end();
     draw_unlock();
 }
+
+void
+info_printerr(info_t *info)
+{
+    int err;
+    offset_t offset = info_offset;
+
+    err = draw_timedlock();
+    if (err) {
+        debug("%s: Lock error: %s", __FUNCTION__, strerror(err));
+        return;
+    }
+
+    draw_center(offset,
+              "Network Error.", RED, CLOCK_INFO_WIDTH);
+    /* Clear next 3 lines */
+    for (int i = 0; i < 3; i++) {
+        next_line(offset);
+        draw_empty_line(offset, CLOCK_INFO_WIDTH);
+    }
+
+    gotoxy(0, 0);
+
+    draw_end();
+    draw_unlock();
+}

@@ -23,6 +23,14 @@
 
 void draw_line(offset_t offset, const char *prompt, const calc_t *value,
                size_t length);
+
+#ifdef COLORFUL_OUTPUT
+void draw_center(offset_t offset, const char *str, int color, size_t length);
+#else
+void draw_center(offset_t offset, const char *str, size_t length);
+#endif /* COLORFUL_OUTPUT */
+void draw_empty_line(offset_t offset, size_t length);
+
 #if CLOCK_TYPE == CLOCK_TYPE_DIGITS
 void draw_digit(offset_t offset, size_t digit);
 #elif CLOCK_TYPE == CLOCK_TYPE_RANDMAP

@@ -29,6 +29,32 @@ draw_line(offset_t offset, const char *prompt, const calc_t *value,
     reset_color();
 }
 
+/** Draw centered text */
+#ifdef COLORFUL_OUTPUT
+void
+draw_center(offset_t offset, const char *str, int color, size_t length) {
+#else
+void
+draw_center(offset_t offset, const char *str, size_t length) {
+#endif /* COLORFUL_OUTPUT */
+    int space_len = (length - strlen(str)) / 2;
+    gotopos(offset);
+    __draw_space(space_len);
+#ifdef COLORFUL_OUTPUT
+    set_color(color);
+#endif /* COLORFUL_OUTPUT */
+    printf("%s", str);
+    reset_color();
+    __draw_space(length - space_len);
+}
+
+void
+draw_empty_line(offset_t offset, size_t length) {
+    gotopos(offset);
+    __draw_space(length);
+    reset_color();
+}
+
 #ifndef CLOCK_DOT_WIDTH
 #define CLOCK_DOT_WIDTH 2
 #endif /* CLOCK_DOT_WIDTH */

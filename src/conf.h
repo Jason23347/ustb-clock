@@ -40,6 +40,8 @@
 #define LOGIN_HOST "202.204.48.82"
 #define PORT       80
 
+#define SOCKET_TIMEOUT 3
+
 #define CLOCK_COLOR       BG_DARKGREEN
 #define CLOCK_DOT_WIDTH   2
 #define CLOCK_SPACE_WIDTH 3
