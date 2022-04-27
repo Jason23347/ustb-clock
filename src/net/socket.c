@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 #if defined(_WIN32) || defined(_WIN64)
 #include <winsock2.h>
 #else
@@ -108,9 +109,13 @@ socket_connect(const char *ip, int port) {
         socket_error("%s: select error\r\n", __FUNCTION__);
         return INVALID_SOCKET;
     } else if (res == 0) {
-        close(fd);
-        socket_error("%s: select timeout in %ds\r\n", __FUNCTION__,
-                     SOCKET_TIMEOUT);
+        // Get current time
+        time_t curr;
+        time(&curr);
+        struct tm *tm = localtime(&curr);
+
+        socket_error("timeout at %d:%d:%d\r\n", tm->tm_hour, tm->tm_min,
+                     tm->tm_sec);
         return INVALID_SOCKET;
     }
 
