@@ -143,6 +143,12 @@ info_redraw(info_t *info) {
     draw_unlock();
 }
 
+#ifdef COLORFUL_OUTPUT
+#define __draw_center(offset, str, color, len) draw_center(offset, str, color, len)
+#else
+#define __draw_center(offset, str, color, len) draw_center(offset, str, len)
+#endif /* COLORFUL_OUTPUT */
+
 void
 info_printerr(info_t *info)
 {
@@ -155,7 +161,7 @@ info_printerr(info_t *info)
         return;
     }
 
-    draw_center(offset,
+    __draw_center(offset,
               "Network Error.", RED, CLOCK_INFO_WIDTH);
     /* Clear next 3 lines */
     for (int i = 0; i < 3; i++) {
