@@ -8,6 +8,12 @@
 /* 绝对值 */
 #define abs(n) ((n > 0) ? n : -n)
 
+#if __WORDSIZE == 64
+#define int64_f "ld"
+#else
+#define int64_f "lld"
+#endif
+
 /* 手动添加小数点，保留两位小数 */
 const char *
 __calc_decimal(char *str, size_t maxlen, int64_t number, size_t n) {
@@ -24,13 +30,7 @@ __calc_decimal(char *str, size_t maxlen, int64_t number, size_t n) {
     }
 
     // 处理小数点
-    snprintf(s, maxlen,
-#if __WORDSIZE == 64
-             "%03ld",
-#else
-             "%03lld",
-#endif
-             number);
+    snprintf(s, maxlen, "%03" int64_f, number);
 
     len = strlen(s);
     // 小数点后两位向右平移

@@ -72,6 +72,12 @@ draw_empty_line(offset_t offset, size_t length) {
 #define POINT (digit & 0x4000) ? DOT : EMP
 #endif /* CLOCK_CONDENSE */
 
+#if (CLOCK_CONDENSE == 0)
+#define __draw_digit_next_line(offset) transpos(offset, 0, 2)
+#else
+#define __draw_digit_next_line(offset) next_line(offset)
+#endif
+
 inline void
 __draw_digit(offset_t offset, int digit) {
     for (int i = 0; i < 5; i++) {
@@ -80,11 +86,7 @@ __draw_digit(offset_t offset, int digit) {
             printf(POINT);
             digit <<= 1;
         }
-#if (CLOCK_CONDENSE == 0)
-        transpos(offset, 0, 2);
-#else
-        next_line(offset);
-#endif
+        __draw_digit_next_line(offset);
     }
 }
 
