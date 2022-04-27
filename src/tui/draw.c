@@ -22,9 +22,7 @@ draw_line(offset_t offset, const char *prompt, const calc_t *value,
     gotopos(offset);
     printf("%s", prompt);
     __draw_space(length - strlen(prompt) - strlen(value->str));
-#ifdef COLORFUL_OUTPUT
     set_color(value->color);
-#endif /* COLORFUL_OUTPUT */
     printf("%s", value->str);
     reset_color();
 }
@@ -40,9 +38,7 @@ draw_center(offset_t offset, const char *str, size_t length) {
     int space_len = (length - strlen(str)) / 2;
     gotopos(offset);
     __draw_space(space_len);
-#ifdef COLORFUL_OUTPUT
     set_color(color);
-#endif /* COLORFUL_OUTPUT */
     printf("%s", str);
     reset_color();
     __draw_space(length - space_len);

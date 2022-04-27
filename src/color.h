@@ -1,6 +1,8 @@
 #ifndef COLOR_H
 #define COLOR_H
 
+#include "config.h"
+
 /* 默认颜色 */
 #define NORMAL 0
 #define BG_NORMAL ;NORMAL
@@ -26,8 +28,14 @@
 
 #define STR(text)     #text
 #define color(code)   "\033[" STR(code) "m"
+
+#ifdef COLORFUL_OUTPUT
 #define set_color(c)  printf(color(%d), c)
 #define reset_color() printf(color(NORMAL;NORMAL))
+#else
+#define set_color(...)
+#define reset_color(...)
+#endif /* COLORFUL_OUTPUT */
 
 const char *colorname(int color);
 
