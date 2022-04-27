@@ -33,7 +33,7 @@ AS_IF([ test "x$enable_colorful_output" != xno ], [
 
 # Clock type: "digits" or "randmap"
 AC_ARG_ENABLE(clock_type,
-    AC_HELP_STRING([--enable-clock-type],
+    AS_HELP_STRING([--enable-clock-type],
     [specify clock type, default: digits]))
 AS_CASE(["$enable_clock_type"],
   [randmap], [
