@@ -84,8 +84,9 @@ calc_flow(calc_t *calc, u_int64_t flow) {
 
     /* gbflow = 100 代表 1G */
     /* 前100G 免费，所以显示剩余免费额度或已付费流量 */
-    u_int64_t gbflow = round(u_int64_t, (float)flow * 100 / MB) - 10000;
-    if (abs(flow) < 100) {
+    /* 自2023年9月起前120G免费 */
+    u_int64_t gbflow = round(u_int64_t, (float)flow * 100 / MB) - 12000;
+    if (abs(flow) < 120) {
         __calc_decimal(calc->str, sizeof(calc->str),
                        round(u_int64_t, (float)flow / KB), 2);
         strncat(calc->str, " MB", sizeof(calc->str));

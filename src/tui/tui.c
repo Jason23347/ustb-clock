@@ -18,7 +18,7 @@ pthread_t clock_th, info_th, watcher_th;
 
 watcher_t watcher;
 
-#ifdef ALWAYS_DETECT_WINSIZE
+#if defined(ALWAYS_DETECT_WINSIZE) || defined(DETECT_TOUCH_SCREEN)
 
 void
 tui_restart(int sig) {
